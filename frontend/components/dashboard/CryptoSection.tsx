@@ -24,6 +24,7 @@ export function CryptoSection({ tokens, isLoading }: CryptoSectionProps) {
 
   const handleSelectToken = (token: RealEstateToken) => {
     if (isWalletConnected) {
+      console.log('Selected token:', token)
       setSelectedToken(token)
     } else {
       // We don't need to show an alert here anymore

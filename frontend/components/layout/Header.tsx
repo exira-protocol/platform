@@ -90,18 +90,16 @@ export function Header({ title }: HeaderProps) {
           </DropdownMenuContent>
         </DropdownMenu>
         {selectedNetwork === "Sui" ? <SuiConnectButton /> : null}
-        {selectedNetwork === "Solana" && (
-          <SolanaConnectButton onConnect={() => {}} />
-        )}
+        {selectedNetwork === "Solana" && <SolanaConnectButton />}
         {selectedNetwork === "Ethereum" && (
           <EthereumConnectButton onConnect={() => {}} />
         )}
-        <ThemeToggle />
-        {isWalletConnected && selectedNetwork !== "Sui" && (
+        {/* theme component */}
+        {/* <ThemeToggle /> */}
+        {/* hello component */}
+        {/* {isWalletConnected && selectedNetwork !== "Sui" && (
           <>
-            <div className="text-sm text-muted-foreground">
-              Hello, {walletAddress?.slice(0, 6)}...{walletAddress?.slice(-4)}
-            </div>
+            <div className="text-sm text-muted-foreground">Hello</div>
             <Avatar>
               <AvatarFallback>
                 <User className="h-5 w-5" />
@@ -111,12 +109,13 @@ export function Header({ title }: HeaderProps) {
               Disconnect
             </Button>
           </>
-        )}
-        {selectedNetwork === "Sui" && isWalletConnected && (
+        )} */}
+        {/* disconnect component */}
+        {/* {selectedNetwork === "Sui" && isWalletConnected && (
           <Button variant="outline" onClick={handleDisconnect}>
             Disconnect
           </Button>
-        )} 
+        )} */}
       </div>
     </div>
   );

@@ -1,15 +1,31 @@
-import React from 'react'
-import { Button } from "@/components/ui/button"
+import React, { useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import "@solana/wallet-adapter-react-ui/styles.css";
+import {
+  WalletModalProvider,
+  WalletMultiButton,
+} from "@solana/wallet-adapter-react-ui";
+import { useGlobalState } from "@/context/GlobalStateContext";
+import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 
-interface SolanaConnectButtonProps {
-  onConnect: () => void
-}
+export function SolanaConnectButton() {
+  const { connection } = useConnection();
+  const { publicKey } = useWallet();
+  const { setWalletAddress, setIsWalletConnected, selectedNetwork } =
+    useGlobalState();
 
-export function SolanaConnectButton({ onConnect }: SolanaConnectButtonProps) {
+  useEffect(() => {
+    if (connection && publicKey && selectedNetwork === "Solana") {
+      setWalletAddress(publicKey);
+      setIsWalletConnected(true);
+    } else {
+      setWalletAddress(null);
+      setIsWalletConnected(false);
+    }
+  }, [connection, publicKey]);
   return (
-    <Button onClick={onConnect}>
-      Connect Solana Wallet
-    </Button>
-  )
+    <>
+      <WalletMultiButton />
+    </>
+  );
 }
-

@@ -1,50 +1,71 @@
-import React, { useState, useEffect } from 'react'
-import { Button } from "@/components/ui/button"
-import { cn } from "@/lib/utils"
-import type { RealEstateToken } from '@/hooks/useRealEstateTokenData'
-import { useDebounce } from '@/hooks/useDebounce'
-import { TransactionPanel } from './TransactionPanel'
+import React, { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import type { RealEstateToken } from "@/hooks/useDashboardData";
+import { useDebounce } from "@/hooks/useDebounce";
+import { TransactionPanel } from "./TransactionPanel";
+import { WithdrawPanel } from "./WithdrawPanel";
 
 interface BuyingSectionProps {
-  selectedToken: RealEstateToken | null
+  selectedToken: RealEstateToken | null;
 }
 
 interface TransactionValues {
-  amount: string
-  tokenAmount: string
+  amount: string;
+  tokenAmount: string;
 }
 
 export function BuyingSection({ selectedToken }: BuyingSectionProps) {
-  const [transactionType, setTransactionType] = useState<'buy' | 'withdraw'>('buy')
-  const [transactionValues, setTransactionValues] = useState<TransactionValues>({
-    amount: '',
-    tokenAmount: '0'
-  })
+  const [transactionType, setTransactionType] = useState<"buy" | "withdraw">(
+    "buy"
+  );
+  const [transactionValues, setTransactionValues] = useState<TransactionValues>(
+    {
+      amount: "",
+      tokenAmount: "0",
+    }
+  );
 
-  const debouncedAmount = useDebounce(transactionValues.amount, 300)
+  const debouncedAmount = useDebounce(transactionValues.amount, 300);
+  const debouncedTokenAmount = useDebounce(transactionValues.tokenAmount, 300);
 
   useEffect(() => {
     if (!selectedToken || !debouncedAmount) {
-      setTransactionValues(prev => ({ ...prev, tokenAmount: '0' }))
-      return
+      setTransactionValues((prev) => ({ ...prev, tokenAmount: "0" }));
+      return;
     }
 
-    const amount = parseFloat(debouncedAmount.replace(/,/g, ''))
+    const amount = parseFloat(debouncedAmount.replace(/,/g, ""));
     if (!isNaN(amount)) {
-      const tokenAmount = (amount / selectedToken.price).toFixed(8)
-      setTransactionValues(prev => ({ ...prev, tokenAmount }))
+      const tokenAmount = Math.round(amount / selectedToken.in_USD).toString();
+      setTransactionValues((prev) => ({ ...prev, tokenAmount }));
     }
-  }, [debouncedAmount, selectedToken])
+  }, [debouncedAmount, selectedToken]);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const input = e.target.value.replace(/[^0-9.]/g, '')
-    const isValid = /^\d*\.?\d*$/.test(input)
-    if (isValid) {
-      setTransactionValues(prev => ({ ...prev, amount: input }))
+  useEffect(() => {
+    if (!selectedToken || !debouncedTokenAmount) {
+      setTransactionValues((prev) => ({ ...prev, amount: "0" }));
+      return;
     }
-  }
 
-  if (!selectedToken) return null
+    const tokenAmount = parseInt(debouncedTokenAmount.replace(/,/g, ""), 10);
+    if (!isNaN(tokenAmount)) {
+      const amount = (tokenAmount * selectedToken.in_USD).toFixed(2);
+      setTransactionValues((prev) => ({ ...prev, amount }));
+    }
+  }, [debouncedTokenAmount, selectedToken]);
+
+  const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const input = e.target.value.replace(/[^0-9.]/g, "");
+    setTransactionValues((prev) => ({ ...prev, amount: input }));
+  };
+
+  const handleTokenChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const input = e.target.value.replace(/[^0-9]/g, "");
+    setTransactionValues((prev) => ({ ...prev, tokenAmount: input }));
+  };
+
+  if (!selectedToken) return null;
 
   return (
     <div className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-lg w-full">
@@ -52,30 +73,50 @@ export function BuyingSection({ selectedToken }: BuyingSectionProps) {
         <Button
           className={cn(
             "flex-1 rounded-r-none text-sm py-2",
-            transactionType === 'buy' ? 'bg-black text-white hover:bg-gray-900' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+            transactionType === "buy"
+              ? "bg-black text-white"
+              : "bg-gray-100 text-gray-700"
           )}
-          onClick={() => setTransactionType('buy')}
+          onClick={() => setTransactionType("buy")}
         >
           Buy
         </Button>
         <Button
           className={cn(
             "flex-1 rounded-l-none text-sm py-2",
-            transactionType === 'withdraw' ? 'bg-black text-white hover:bg-gray-900' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+            transactionType === "withdraw"
+              ? "bg-black text-white"
+              : "bg-gray-100 text-gray-700"
           )}
-          onClick={() => setTransactionType('withdraw')}
+          onClick={() => setTransactionType("withdraw")}
         >
           Withdraw
         </Button>
       </div>
 
-      <TransactionPanel 
+      {/* <TransactionPanel
         selectedToken={selectedToken}
         transactionValues={transactionValues}
-        onAmountChange={handleInputChange}
+        onAmountChange={handleAmountChange}
+        onTokenChange={handleTokenChange}
         transactionType={transactionType}
-      />
-    </div>
-  )
-}
+      /> */}
 
+      {transactionType === "buy" ? (
+        <TransactionPanel
+          selectedToken={selectedToken}
+          transactionValues={transactionValues}
+          onAmountChange={handleAmountChange}
+          onTokenChange={handleTokenChange}
+          transactionType={transactionType}
+        />
+      ) : (
+        <WithdrawPanel
+          selectedToken={selectedToken}
+          transactionValues={transactionValues}
+          onTokenChange={handleTokenChange}
+        />
+      )}
+    </div>
+  );
+}

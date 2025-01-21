@@ -22,7 +22,7 @@ export default function Home() {
           {[
             { title: 'Total Value Locked', value: data?.totalValueLocked, icon: TrendingUp },
             { title: 'Active Users', value: data?.activeUsers, icon: Users },
-            { title: 'Total Borrowed', value: data?.totalBorrowed, icon: DollarSign },
+            { title: 'Total Processed Value', value: data?.totalProcessedValue, icon: DollarSign },
             { title: 'Total Transactions', value: data?.totalTransactions, icon: Activity },
           ].map((item, index) => (
             <Card key={index} className="bg-gray-900 text-white">

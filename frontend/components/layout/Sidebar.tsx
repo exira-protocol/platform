@@ -22,7 +22,7 @@ export default function Sidebar() {
   return (
     <div className="fixed left-4 top-4 bottom-4 w-64 bg-white dark:bg-gray-800 rounded-3xl shadow-lg flex flex-col overflow-hidden">
       <div className="p-6 border-b border-gray-200 dark:border-gray-700">
-        <Image src="/icon+text+whitebg.png" alt="Exira Logo" width={120} height={40} />
+        <Image src="/logo.svg" alt="Exira Logo" width={400} height={40} />
       </div>
       <nav className="flex-grow overflow-y-auto py-6">
         <ul className="space-y-1">

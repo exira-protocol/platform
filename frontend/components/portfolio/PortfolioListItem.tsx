@@ -27,7 +27,7 @@ export function PortfolioListItem({ asset }: PortfolioListItemProps) {
           <div className="text-sm text-gray-500 dark:text-gray-400">{asset.name}</div>
         </div>
       </div>
-      <div className="text-right font-medium">₹{asset.price.toFixed(2)}</div>
+      <div className="text-right font-medium">${asset.price.toFixed(2)}</div>
       <div className={`text-right flex items-center justify-end ${asset.change >= 0 ? 'text-green-600' : 'text-red-600'}`}>
         {asset.change >= 0 ? (
           <ArrowUpRight className="h-3 w-3 mr-1" />
@@ -37,7 +37,7 @@ export function PortfolioListItem({ asset }: PortfolioListItemProps) {
         {Math.abs(asset.change)}%
       </div>
       <div className="text-right">
-        <div className="font-medium">₹{asset.currentValue.toFixed(2)}</div>
+        <div className="font-medium">${asset.currentValue.toFixed(2)}</div>
         <div className="text-sm text-gray-500 dark:text-gray-400">{asset.shares} shares</div>
       </div>
     </div>
