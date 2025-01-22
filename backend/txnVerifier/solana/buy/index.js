@@ -74,8 +74,41 @@ export async function processTransaction(req, res) {
 
     await addToUSDCTxn(transaction, "", "success");
 
+    // Calculate equivalent shares from transferred USDC
+    let shareTokensToTransfer = amountTransferred / pricePerShare;
+
+    // Round down to the nearest integer
+    shareTokensToTransfer = Math.floor(shareTokensToTransfer);
+
+    // Calculate Expected USDC Amount (Share Price + 1% Fee)
+    const expectedTotalUSDC = shareTokensToTransfer * pricePerShare * 1.01; // 1% fee added
+
+    // Check if excess amount matches the 1% fee
+    const excessAmount =
+      amountTransferred - shareTokensToTransfer * pricePerShare;
+    const expectedFee = shareTokensToTransfer * pricePerShare * 0.01;
+
+    console.log("Expected Total USDC with Fee:", expectedTotalUSDC);
+    console.log("Amount Transferred:", amountTransferred);
+    console.log("Excess Amount (should match 1% fee):", excessAmount);
+    console.log("Expected 1% Fee:", expectedFee);
+
+    // Reject if the excess amount does not match the 1% fee
+    if (Math.abs(excessAmount - expectedFee) > 0.01) {
+      // Allow slight floating-point precision errors
+      throw new Error(
+        "Invalid transaction: The transferred amount does not include the correct 1% fee."
+      );
+    }
+
+    console.log("Transaction includes the correct 1% fee.");
+
     // const tokenTransferHash = await transferTokens(receiver, amountTransferred);
-    const tokenTransferHash = await transferTokens(receiver, 1);
+    const tokenTransferHash = await transferTokens(
+      receiver,
+      shareTokensToTransfer,
+      shareTokenMintAddress
+    );
 
     const transactionData = {
       user_id: userId,

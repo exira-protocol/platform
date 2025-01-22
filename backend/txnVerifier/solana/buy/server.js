@@ -48,7 +48,7 @@ app.use((err, req, res, next) => {
     .json({ error: "Internal server error", message: err.message });
 });
 
-app.post("/process-transaction", validateSignature, async (req, res, next) => {
+app.post("/solana/buy/process-transaction", validateSignature, async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
@@ -61,7 +61,7 @@ app.post("/process-transaction", validateSignature, async (req, res, next) => {
   }
 });
 
-app.get("/health", (req, res) => {
+app.get("solana/buy/health", (req, res) => {
   res.send("OK");
 });
 
