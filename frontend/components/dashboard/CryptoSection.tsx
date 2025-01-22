@@ -69,7 +69,7 @@ export function CryptoSection({ tokens, isLoading }: CryptoSectionProps) {
         {selectedToken ? (
           <BuyingSection selectedToken={selectedToken} />
         ) : (
-          <div className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-lg w-full h-full flex items-center justify-center">
+          <div className="bg-gray-200 dark:bg-gray-800 p-4 rounded-xl w-full h-full flex items-center justify-center">
             <p className="text-lg text-gray-500 dark:text-gray-400">
               {isWalletConnected 
                 ? "Select a token to buy" 

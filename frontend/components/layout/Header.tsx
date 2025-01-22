@@ -15,6 +15,7 @@ import { SuiConnectButton } from "@/blockchains/sui/walletHandling/SuiConnectBut
 import { SolanaConnectButton } from "@/blockchains/solana/walletHandling/SolanaConnectButton";
 import { EthereumConnectButton } from "@/blockchains/ethereum/walletHandling/EthereumConnectButton";
 import { useGlobalState } from "@/context/GlobalStateContext";
+import { toast } from "sonner";
 
 interface HeaderProps {
   title: string;
@@ -56,20 +57,25 @@ export function Header({ title }: HeaderProps) {
               <ChevronDown className="ml-2 h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuItem onClick={() => handleNetworkSelect("Sui")}>
+          <DropdownMenuContent align="center" className="w-48">
+            <DropdownMenuItem
+              onClick={() => {
+                handleNetworkSelect("Sui");
+              }}
+              disabled={true}
+            >
               <Image
-                src="/sui-icon.png"
+                src="/sui.svg"
                 alt="Sui"
-                width={20}
-                height={20}
+                width={18}
+                height={18}
                 className="mr-2"
               />
-              Sui
+              Sui (Soon)
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => handleNetworkSelect("Solana")}>
               <Image
-                src="/solana-icon.png"
+                src="/solana.svg"
                 alt="Solana"
                 width={20}
                 height={20}
@@ -77,15 +83,18 @@ export function Header({ title }: HeaderProps) {
               />
               Solana
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => handleNetworkSelect("Ethereum")}>
+            <DropdownMenuItem
+              onClick={() => handleNetworkSelect("Ethereum")}
+              disabled={true}
+            >
               <Image
-                src="/ethereum-icon.png"
+                src="/ethereum.svg"
                 alt="Ethereum"
                 width={20}
                 height={20}
                 className="mr-2"
               />
-              Ethereum
+              Ethereum (Soon)
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

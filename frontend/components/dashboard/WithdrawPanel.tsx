@@ -107,7 +107,7 @@ export const WithdrawPanel: React.FC<WithdrawPanelProps> = ({
       className="w-full bg-black text-white hover:bg-gray-800 text-base py-5"
       size="lg"
     >
-      CONNECT WALLET
+      Pay Now
     </Button>
 
     <div className="space-y-2 pt-2">

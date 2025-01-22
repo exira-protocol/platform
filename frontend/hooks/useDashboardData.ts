@@ -21,6 +21,9 @@ export interface RealEstateToken {
   country: string;
   external_link: string;
   in_USD: number;
+  contract_solana: string;
+  contract_sui: string;
+  contract_ethereum: string;
   tokenAddress: {
     solana: string;
     sui: string;
@@ -93,6 +96,9 @@ export function useDashboardData() {
           country: token.country,
           external_link: token.external_link,
           in_USD: token.in_USD,
+          contract_solana: token.contract_solana,
+          contract_sui: token.contract_sui,
+          contract_ethereum: token.contract_ethereum,
           tokenAddress: {
             solana: token.contract_solana,
             sui: token.contract_sui,

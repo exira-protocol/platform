@@ -68,14 +68,14 @@ export function BuyingSection({ selectedToken }: BuyingSectionProps) {
   if (!selectedToken) return null;
 
   return (
-    <div className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-lg w-full">
+    <div className="bg-gray-200 dark:bg-gray-800 p-4 rounded-xl w-full">
       <div className="flex mb-4">
         <Button
           className={cn(
             "flex-1 rounded-r-none text-sm py-2",
             transactionType === "buy"
               ? "bg-black text-white"
-              : "bg-gray-100 text-gray-700"
+              : "bg-gray-100 text-gray-700 hover:text-white"
           )}
           onClick={() => setTransactionType("buy")}
         >
@@ -86,7 +86,7 @@ export function BuyingSection({ selectedToken }: BuyingSectionProps) {
             "flex-1 rounded-l-none text-sm py-2",
             transactionType === "withdraw"
               ? "bg-black text-white"
-              : "bg-gray-100 text-gray-700"
+              : "bg-gray-100 text-gray-700 hover:text-white"
           )}
           onClick={() => setTransactionType("withdraw")}
         >

@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { RealEstateToken } from "@/hooks/useDashboardData";
 import { useToast } from "@/components/ui/use-toast";
+import { useGlobalState } from "@/context/GlobalStateContext";
 
 interface CryptoTableProps {
   data: RealEstateToken[];
@@ -36,6 +37,7 @@ export function CryptoTable({
   const [selectedCountry, setSelectedCountry] = useState<Country>("India");
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
+  const { selectedNetwork } = useGlobalState();
 
   const handleCountryChange = (country: Country) => {
     setSelectedCountry(country);
@@ -132,7 +134,7 @@ export function CryptoTable({
                     <TableHead>Symbol</TableHead>
                     <TableHead className="text-right">Price</TableHead>
                     <TableHead className="text-right">24h Change</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
+                    <TableHead className="text-right"></TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -164,15 +166,26 @@ export function CryptoTable({
                             }}
                           >
                             <ChartLineUp className="h-4 w-4 mr-1" />
-                            View
+                            View Share
                           </Button>
                           <Button
                             variant="outline"
                             size="sm"
-                            onClick={() => onViewToken(token)}
+                            onClick={() => {
+                              // onViewToken(token)
+                              if (selectedNetwork === "Solana") {
+                                window.open(
+                                  "https://solscan.io/token/" +
+                                    token.contract_solana,
+                                  "_blank"
+                                );
+                              } else {
+                                alert("We don't support this network yet.");
+                              }
+                            }}
                           >
                             <ExternalLink className="h-4 w-4 mr-1" />
-                            View Token
+                            Solscan
                           </Button>
                           <Button size="sm" onClick={() => onSelect(token)}>
                             <ArrowRight className="h-4 w-4 mr-1" />
