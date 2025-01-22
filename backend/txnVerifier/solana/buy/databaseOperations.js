@@ -61,7 +61,7 @@ export async function getUserId(walletAddress) {
 export async function getShareDetails(tokenMintAddress) {
   const { data, error } = await supabase
     .from("shares")
-    .select("id, price")
+    .select("id, price, max_allowance, instant_allowance")
     .eq("contract_solana", tokenMintAddress)
     .maybeSingle();
 
@@ -69,7 +69,12 @@ export async function getShareDetails(tokenMintAddress) {
     throw new Error("Invalid token mint address, no matching share found.");
   }
 
-  return { shareId: data.id, pricePerShare: data.price };
+  return {
+    shareId: data.id,
+    pricePerShare: data.price,
+    maxAllowance: data.max_allowance,
+    instantAllowance: data.instant_allowance,
+  };
 }
 
 export async function insertTransaction(transactionData) {
@@ -81,4 +86,20 @@ export async function insertTransaction(transactionData) {
     console.error(`❌ Failed to store transaction: ${error.message}`);
     throw new Error("Failed to store transaction in database.");
   }
+}
+
+export async function addMessageToQueue(payload) {
+  const { data, error } = await supabase.schema("pgmq_public").rpc("send", {
+    queue_name: "solana_transactions", // Your queue name
+    message: payload, // Message payload
+    sleep_seconds: 0, // Optional delay before the message is visible
+  });
+
+  if (error) {
+    console.error("Error adding message to queue:", error);
+    return false;
+  }
+
+  console.log("Message added to queue successfully:", data);
+  return true;
 }

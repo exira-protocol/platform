@@ -5,6 +5,7 @@ import {
   getUserId,
   getShareDetails,
   insertTransaction,
+  addMessageToQueue,
 } from "./databaseOperations.js";
 import { transferTokens } from "./tokenTransfer.js";
 import { getUSDCTransferred } from "./transactionValidator.js";
@@ -68,9 +69,8 @@ export async function processTransaction(req, res) {
     console.log("Receiver:", receiver);
 
     // const { shareId, pricePerShare } = await getShareDetails(tokenMintAddress);
-    const { shareId, pricePerShare } = await getShareDetails(
-      shareTokenMintAddress
-    );
+    const { shareId, pricePerShare, maxAllowance, instantAllowance } =
+      await getShareDetails(shareTokenMintAddress);
 
     await addToUSDCTxn(transaction, "", "success");
 
@@ -103,12 +103,17 @@ export async function processTransaction(req, res) {
 
     console.log("Transaction includes the correct 1% fee.");
 
-    // const tokenTransferHash = await transferTokens(receiver, amountTransferred);
-    const tokenTransferHash = await transferTokens(
-      receiver,
-      shareTokensToTransfer,
-      shareTokenMintAddress
-    );
+    if (shareTokensToTransfer > maxAllowance) {
+      throw new Error(
+        "Invalid transaction: The number of shares to transfer exceeds the maximum allowance."
+      );
+    }
+
+    let status = "queued";
+
+    if (shareTokensToTransfer > instantAllowance) {
+      status = "processing";
+    }
 
     const transactionData = {
       user_id: userId,
@@ -119,16 +124,33 @@ export async function processTransaction(req, res) {
       chain: "Solana",
       timestamp: new Date(transaction.blockTime * 1000).toISOString(),
       usdc_hash: signature,
-      token_hash: tokenTransferHash,
+      token_hash: "",
       note: "Transaction processed successfully.",
-      status: "success",
+      status: status,
       wallet_address: sender,
     };
 
     await insertTransaction(transactionData);
 
     console.log(`✅ Transaction successfully processed and stored`);
-    return res.status(200).json({
+
+    if (status === "queued") {
+      const addQueueResponse = await addMessageToQueue({
+        txnHash: signature,
+        receiver,
+        totalUSDCToSendToUser: amountTransferred,
+        type: "buy",
+      });
+
+      console.log(`Transaction added to queue: ${addQueueResponse}`);
+
+      return res.status(200).json({
+        message: "Transaction processed and queued successfully.",
+        //   transactionData,
+      });
+    }
+
+    return res.status(204).json({
       message: "Transaction processed and stored successfully.",
       //   transactionData,
     });

@@ -82,3 +82,19 @@ export async function insertTransaction(transactionData) {
     throw new Error("Failed to store transaction in database.");
   }
 }
+
+export async function addMessageToQueue(payload) {
+  const { data, error } = await supabase.schema("pgmq_public").rpc("send", {
+    queue_name: "solana_transactions", // Your queue name
+    message: payload, // Message payload
+    sleep_seconds: 0, // Optional delay before the message is visible
+  });
+
+  if (error) {
+    console.error("Error adding message to queue:", error);
+    return false;
+  }
+
+  console.log("Message added to queue successfully:", data);
+  return true;
+}

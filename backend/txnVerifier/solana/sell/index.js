@@ -5,6 +5,7 @@ import {
   getUserId,
   getShareDetails,
   insertTransaction,
+  addMessageToQueue,
 } from "./databaseOperations.js";
 import { transferTokens } from "./tokenTransfer.js";
 import { getShareTokensTransferred } from "./transactionValidator.js";
@@ -84,15 +85,15 @@ export async function processTransaction(req, res) {
     totalUSDCToSendToUser = totalUSDCToSendToUser * 0.99;
 
     // const tokenTransferHash = await transferTokens(receiver, amountTransferred);
-    const tokenTransferHash = await transferTokens(
-      receiver,
-      totalUSDCToSendToUser
-    );
+    // const tokenTransferHash = await transferTokens(
+    //   receiver,
+    //   totalUSDCToSendToUser
+    // );
 
     const transactionData = {
       user_id: userId,
       share_id: shareId,
-      txn_type: "buy",
+      txn_type: "sell",
       quantity: amountTransferred,
       price_per_share: pricePerShare,
       chain: "Solana",
@@ -100,13 +101,23 @@ export async function processTransaction(req, res) {
       usdc_hash: signature,
       token_hash: tokenTransferHash,
       note: "Transaction processed successfully.",
-      status: "success",
+      status: "queued",
       wallet_address: sender,
     };
 
     await insertTransaction(transactionData);
 
     console.log(`Transaction successfully processed and stored`);
+
+    const addQueueResponse = await addMessageToQueue({
+      txnHash: signature,
+      receiver,
+      totalUSDCToSendToUser,
+      type: "sell",
+    });
+
+    console.log(`Transaction added to queue: ${addQueueResponse}`);
+
     return res.status(200).json({
       message: "Transaction processed and stored successfully.",
       //   transactionData,

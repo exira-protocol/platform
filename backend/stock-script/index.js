@@ -105,7 +105,7 @@ async function updateDatabase(updates) {
         .update({ price: update.price, current_trend: update.current_trend })
         .eq("token_symbol", update.token_symbol);
 
-      await supabase.rpc("refresh_all_agg_views_proc");
+      await supabase.rpc("refresh_both_views_incremental_all");
 
       if (error) {
         logger.error(`Error updating ${update.token_symbol}: ${error.message}`);
