@@ -97,8 +97,9 @@ export const TransactionPanel: React.FC<TransactionPanelProps> = ({
       <div className="flex justify-between items-center text-sm">
         <span className="text-gray-600 dark:text-gray-400">Total to Pay:</span>
         <span className="font-bold text-xl">
+          {/* add mintFee% to the transactionValues.amount */}
           {(
-            Number.parseFloat(transactionValues.tokenAmount || "0") *
+            Number.parseFloat(transactionValues.amount || "0") *
             (1 + selectedToken.mintFee / 100)
           ).toFixed(4)}{" "}
           USDC

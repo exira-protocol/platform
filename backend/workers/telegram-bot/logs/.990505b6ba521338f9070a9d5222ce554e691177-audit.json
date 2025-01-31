@@ -1,0 +1,15 @@
+{
+    "keep": {
+        "days": false,
+        "amount": 24
+    },
+    "auditLog": "logs/.990505b6ba521338f9070a9d5222ce554e691177-audit.json",
+    "files": [
+        {
+            "date": 1738246662770,
+            "name": "logs/telegram-bot-2025-01-30-19.log",
+            "hash": "556f21ca18f8b7e57ef56c54e4c1ae9288fcf37b08432484195b77f9e3641d09"
+        }
+    ],
+    "hashType": "sha256"
+}

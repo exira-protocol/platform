@@ -1,0 +1,120 @@
+"filename", "language", "JSON", "JSON with Comments", "TypeScript", "JavaScript", "Markdown", "TypeScript JSX", "CSS", "XML", "comment", "blank", "total"
+"/home/manuareraa/Manu/github/exira/platform/frontend/README.md", "Markdown", 0, 0, 0, 0, 23, 0, 0, 0, 0, 14, 37
+"/home/manuareraa/Manu/github/exira/platform/frontend/app/api/express-interest/borrow/route.ts", "TypeScript", 0, 0, 7, 0, 0, 0, 0, 0, 2, 6, 15
+"/home/manuareraa/Manu/github/exira/platform/frontend/app/api/express-interest/country/route.ts", "TypeScript", 0, 0, 7, 0, 0, 0, 0, 0, 2, 6, 15
+"/home/manuareraa/Manu/github/exira/platform/frontend/app/borrow/page.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 118, 0, 0, 0, 10, 128
+"/home/manuareraa/Manu/github/exira/platform/frontend/app/globals.css", "CSS", 0, 0, 0, 0, 0, 0, 90, 0, 0, 5, 95
+"/home/manuareraa/Manu/github/exira/platform/frontend/app/layout.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 32, 0, 0, 0, 5, 37
+"/home/manuareraa/Manu/github/exira/platform/frontend/app/page.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 50, 0, 0, 0, 7, 57
+"/home/manuareraa/Manu/github/exira/platform/frontend/app/portfolio/page.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 187, 0, 0, 0, 13, 200
+"/home/manuareraa/Manu/github/exira/platform/frontend/app/transactions/page.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 213, 0, 0, 0, 19, 232
+"/home/manuareraa/Manu/github/exira/platform/frontend/backups/BuyingSection.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 70, 0, 0, 0, 12, 82
+"/home/manuareraa/Manu/github/exira/platform/frontend/backups/TransactionPanel.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 125, 0, 0, 20, 10, 155
+"/home/manuareraa/Manu/github/exira/platform/frontend/blockchains/ethereum/chainInteraction/EthereumInteractions.ts", "TypeScript", 0, 0, 8, 0, 0, 0, 0, 0, 2, 3, 13
+"/home/manuareraa/Manu/github/exira/platform/frontend/blockchains/ethereum/walletHandling/EthereumConnectButton.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 12, 0, 0, 0, 4, 16
+"/home/manuareraa/Manu/github/exira/platform/frontend/blockchains/solana/chainInteraction/SolanaInteractions.ts", "TypeScript", 0, 0, 8, 0, 0, 0, 0, 0, 2, 3, 13
+"/home/manuareraa/Manu/github/exira/platform/frontend/blockchains/solana/walletHandling/SolanaConnectButton.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 29, 0, 0, 0, 3, 32
+"/home/manuareraa/Manu/github/exira/platform/frontend/blockchains/sui/chainInteraction/SuiInteractions.ts", "TypeScript", 0, 0, 8, 0, 0, 0, 0, 0, 2, 3, 13
+"/home/manuareraa/Manu/github/exira/platform/frontend/blockchains/sui/walletHandling/SuiConnectButton.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 26, 0, 0, 5, 6, 37
+"/home/manuareraa/Manu/github/exira/platform/frontend/components.json", "JSON", 21, 0, 0, 0, 0, 0, 0, 0, 0, 0, 21
+"/home/manuareraa/Manu/github/exira/platform/frontend/components/dashboard/BuyingSection.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 101, 0, 0, 7, 15, 123
+"/home/manuareraa/Manu/github/exira/platform/frontend/components/dashboard/CryptoSection.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 71, 0, 0, 4, 10, 85
+"/home/manuareraa/Manu/github/exira/platform/frontend/components/dashboard/CryptoTable.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 216, 0, 0, 1, 12, 229
+"/home/manuareraa/Manu/github/exira/platform/frontend/components/dashboard/TransactionPanel.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 132, 0, 0, 0, 10, 142
+"/home/manuareraa/Manu/github/exira/platform/frontend/components/dashboard/WithdrawPanel.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 113, 0, 0, 0, 10, 123
+"/home/manuareraa/Manu/github/exira/platform/frontend/components/layout/Header.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 102, 0, 0, 23, 7, 132
+"/home/manuareraa/Manu/github/exira/platform/frontend/components/layout/Layout.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 49, 0, 0, 1, 6, 56
+"/home/manuareraa/Manu/github/exira/platform/frontend/components/layout/PageTransition.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 23, 0, 0, 0, 5, 28
+"/home/manuareraa/Manu/github/exira/platform/frontend/components/layout/Sidebar.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 57, 0, 0, 2, 5, 64
+"/home/manuareraa/Manu/github/exira/platform/frontend/components/layout/ThemeToggle.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 17, 0, 0, 0, 4, 21
+"/home/manuareraa/Manu/github/exira/platform/frontend/components/portfolio/PortfolioDistribution.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 40, 0, 0, 0, 5, 45
+"/home/manuareraa/Manu/github/exira/platform/frontend/components/portfolio/PortfolioList.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 66, 0, 0, 0, 7, 73
+"/home/manuareraa/Manu/github/exira/platform/frontend/components/portfolio/PortfolioListItem.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 42, 0, 0, 0, 5, 47
+"/home/manuareraa/Manu/github/exira/platform/frontend/components/portfolio/PortfolioStats.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 69, 0, 0, 0, 7, 76
+"/home/manuareraa/Manu/github/exira/platform/frontend/components/providers/SolanaProvider.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 39, 0, 0, 2, 7, 48
+"/home/manuareraa/Manu/github/exira/platform/frontend/components/providers/SuiProvider.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 23, 0, 0, 1, 6, 30
+"/home/manuareraa/Manu/github/exira/platform/frontend/components/shared/ContactModal.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 89, 0, 0, 0, 5, 94
+"/home/manuareraa/Manu/github/exira/platform/frontend/components/transactions/TransactionList.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 122, 0, 0, 0, 10, 132
+"/home/manuareraa/Manu/github/exira/platform/frontend/components/ui/accordion.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 50, 0, 0, 0, 9, 59
+"/home/manuareraa/Manu/github/exira/platform/frontend/components/ui/alert-dialog.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 127, 0, 0, 0, 15, 142
+"/home/manuareraa/Manu/github/exira/platform/frontend/components/ui/alert.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 53, 0, 0, 0, 7, 60
+"/home/manuareraa/Manu/github/exira/platform/frontend/components/ui/aspect-ratio.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 4, 0, 0, 0, 4, 8
+"/home/manuareraa/Manu/github/exira/platform/frontend/components/ui/avatar.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 44, 0, 0, 0, 7, 51
+"/home/manuareraa/Manu/github/exira/platform/frontend/components/ui/badge.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 31, 0, 0, 0, 6, 37
+"/home/manuareraa/Manu/github/exira/platform/frontend/components/ui/breadcrumb.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 105, 0, 0, 0, 11, 116
+"/home/manuareraa/Manu/github/exira/platform/frontend/components/ui/button.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 51, 0, 0, 0, 6, 57
+"/home/manuareraa/Manu/github/exira/platform/frontend/components/ui/calendar.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 61, 0, 0, 0, 6, 67
+"/home/manuareraa/Manu/github/exira/platform/frontend/components/ui/card.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 71, 0, 0, 0, 9, 80
+"/home/manuareraa/Manu/github/exira/platform/frontend/components/ui/carousel.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 232, 0, 0, 0, 31, 263
+"/home/manuareraa/Manu/github/exira/platform/frontend/components/ui/chart.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 327, 0, 0, 2, 37, 366
+"/home/manuareraa/Manu/github/exira/platform/frontend/components/ui/checkbox.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 26, 0, 0, 0, 5, 31
+"/home/manuareraa/Manu/github/exira/platform/frontend/components/ui/collapsible.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 6, 0, 0, 0, 6, 12
+"/home/manuareraa/Manu/github/exira/platform/frontend/components/ui/command.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 136, 0, 0, 0, 18, 154
+"/home/manuareraa/Manu/github/exira/platform/frontend/components/ui/context-menu.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 182, 0, 0, 0, 19, 201
+"/home/manuareraa/Manu/github/exira/platform/frontend/components/ui/dialog.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 109, 0, 0, 0, 14, 123
+"/home/manuareraa/Manu/github/exira/platform/frontend/components/ui/drawer.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 105, 0, 0, 0, 14, 119
+"/home/manuareraa/Manu/github/exira/platform/frontend/components/ui/dropdown-menu.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 182, 0, 0, 0, 19, 201
+"/home/manuareraa/Manu/github/exira/platform/frontend/components/ui/form.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 153, 0, 0, 0, 26, 179
+"/home/manuareraa/Manu/github/exira/platform/frontend/components/ui/hover-card.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 23, 0, 0, 0, 7, 30
+"/home/manuareraa/Manu/github/exira/platform/frontend/components/ui/input-otp.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 63, 0, 0, 0, 9, 72
+"/home/manuareraa/Manu/github/exira/platform/frontend/components/ui/input.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 19, 0, 0, 0, 4, 23
+"/home/manuareraa/Manu/github/exira/platform/frontend/components/ui/label.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 21, 0, 0, 0, 6, 27
+"/home/manuareraa/Manu/github/exira/platform/frontend/components/ui/menubar.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 217, 0, 0, 0, 20, 237
+"/home/manuareraa/Manu/github/exira/platform/frontend/components/ui/navigation-menu.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 117, 0, 0, 0, 12, 129
+"/home/manuareraa/Manu/github/exira/platform/frontend/components/ui/pagination.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 107, 0, 0, 0, 11, 118
+"/home/manuareraa/Manu/github/exira/platform/frontend/components/ui/popover.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 25, 0, 0, 0, 7, 32
+"/home/manuareraa/Manu/github/exira/platform/frontend/components/ui/progress.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 24, 0, 0, 0, 5, 29
+"/home/manuareraa/Manu/github/exira/platform/frontend/components/ui/radio-group.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 39, 0, 0, 0, 6, 45
+"/home/manuareraa/Manu/github/exira/platform/frontend/components/ui/resizable.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 39, 0, 0, 0, 7, 46
+"/home/manuareraa/Manu/github/exira/platform/frontend/components/ui/scroll-area.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 43, 0, 0, 0, 6, 49
+"/home/manuareraa/Manu/github/exira/platform/frontend/components/ui/select.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 146, 0, 0, 0, 15, 161
+"/home/manuareraa/Manu/github/exira/platform/frontend/components/ui/separator.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 27, 0, 0, 0, 5, 32
+"/home/manuareraa/Manu/github/exira/platform/frontend/components/ui/sheet.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 125, 0, 0, 0, 16, 141
+"/home/manuareraa/Manu/github/exira/platform/frontend/components/ui/sidebar.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 697, 0, 0, 12, 55, 764
+"/home/manuareraa/Manu/github/exira/platform/frontend/components/ui/skeleton.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 13, 0, 0, 0, 3, 16
+"/home/manuareraa/Manu/github/exira/platform/frontend/components/ui/slider.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 24, 0, 0, 0, 5, 29
+"/home/manuareraa/Manu/github/exira/platform/frontend/components/ui/sonner.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 26, 0, 0, 0, 6, 32
+"/home/manuareraa/Manu/github/exira/platform/frontend/components/ui/switch.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 25, 0, 0, 0, 5, 30
+"/home/manuareraa/Manu/github/exira/platform/frontend/components/ui/table.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 107, 0, 0, 0, 11, 118
+"/home/manuareraa/Manu/github/exira/platform/frontend/components/ui/tabs.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 48, 0, 0, 0, 8, 56
+"/home/manuareraa/Manu/github/exira/platform/frontend/components/ui/textarea.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 19, 0, 0, 0, 4, 23
+"/home/manuareraa/Manu/github/exira/platform/frontend/components/ui/toast.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 116, 0, 0, 0, 14, 130
+"/home/manuareraa/Manu/github/exira/platform/frontend/components/ui/toaster.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 32, 0, 0, 0, 4, 36
+"/home/manuareraa/Manu/github/exira/platform/frontend/components/ui/toggle-group.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 52, 0, 0, 0, 10, 62
+"/home/manuareraa/Manu/github/exira/platform/frontend/components/ui/toggle.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 39, 0, 0, 0, 7, 46
+"/home/manuareraa/Manu/github/exira/platform/frontend/components/ui/tooltip.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 23, 0, 0, 0, 8, 31
+"/home/manuareraa/Manu/github/exira/platform/frontend/components/ui/use-mobile.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 15, 0, 0, 0, 5, 20
+"/home/manuareraa/Manu/github/exira/platform/frontend/components/ui/use-toast.ts", "TypeScript", 0, 0, 160, 0, 0, 0, 0, 0, 3, 32, 195
+"/home/manuareraa/Manu/github/exira/platform/frontend/config/sidebar.ts", "TypeScript", 0, 0, 13, 0, 0, 0, 0, 0, 0, 3, 16
+"/home/manuareraa/Manu/github/exira/platform/frontend/context/GlobalStateContext.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 48, 0, 0, 0, 8, 56
+"/home/manuareraa/Manu/github/exira/platform/frontend/hooks/use-mobile.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 15, 0, 0, 0, 5, 20
+"/home/manuareraa/Manu/github/exira/platform/frontend/hooks/use-toast.ts", "TypeScript", 0, 0, 160, 0, 0, 0, 0, 0, 3, 32, 195
+"/home/manuareraa/Manu/github/exira/platform/frontend/hooks/useCryptoData.ts", "TypeScript", 0, 0, 67, 0, 0, 0, 0, 0, 2, 8, 77
+"/home/manuareraa/Manu/github/exira/platform/frontend/hooks/useDashboardData.ts", "TypeScript", 0, 0, 101, 0, 0, 0, 0, 0, 10, 13, 124
+"/home/manuareraa/Manu/github/exira/platform/frontend/hooks/useDebounce.ts", "TypeScript", 0, 0, 9, 0, 0, 0, 0, 0, 0, 5, 14
+"/home/manuareraa/Manu/github/exira/platform/frontend/hooks/useNetworkConfig.ts", "TypeScript", 0, 0, 9, 0, 0, 0, 0, 0, 0, 4, 13
+"/home/manuareraa/Manu/github/exira/platform/frontend/hooks/usePortfolioData.ts", "TypeScript", 0, 0, 143, 0, 0, 0, 0, 0, 4, 15, 162
+"/home/manuareraa/Manu/github/exira/platform/frontend/hooks/useRealEstateTokenData.ts", "TypeScript", 0, 0, 119, 0, 0, 0, 0, 0, 3, 10, 132
+"/home/manuareraa/Manu/github/exira/platform/frontend/hooks/useTokenData.ts", "TypeScript", 0, 0, 43, 0, 0, 0, 0, 0, 3, 9, 55
+"/home/manuareraa/Manu/github/exira/platform/frontend/hooks/useTransactionData.ts", "TypeScript", 0, 0, 129, 0, 0, 0, 0, 0, 1, 12, 142
+"/home/manuareraa/Manu/github/exira/platform/frontend/lib/supabase.ts", "TypeScript", 0, 0, 7, 0, 0, 0, 0, 0, 0, 4, 11
+"/home/manuareraa/Manu/github/exira/platform/frontend/lib/theme.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 57, 0, 0, 1, 16, 74
+"/home/manuareraa/Manu/github/exira/platform/frontend/lib/utils.ts", "TypeScript", 0, 0, 5, 0, 0, 0, 0, 0, 0, 2, 7
+"/home/manuareraa/Manu/github/exira/platform/frontend/next-env.d.ts", "TypeScript", 0, 0, 0, 0, 0, 0, 0, 0, 4, 2, 6
+"/home/manuareraa/Manu/github/exira/platform/frontend/next.config.mjs", "JavaScript", 0, 0, 0, 41, 0, 0, 0, 0, 2, 6, 49
+"/home/manuareraa/Manu/github/exira/platform/frontend/package-lock.json", "JSON", 13242, 0, 0, 0, 0, 0, 0, 0, 0, 1, 13243
+"/home/manuareraa/Manu/github/exira/platform/frontend/package.json", "JSON", 79, 0, 0, 0, 0, 0, 0, 0, 0, 1, 80
+"/home/manuareraa/Manu/github/exira/platform/frontend/postcss.config.mjs", "JavaScript", 0, 0, 0, 6, 0, 0, 0, 0, 1, 2, 9
+"/home/manuareraa/Manu/github/exira/platform/frontend/public/ethereum.svg", "XML", 0, 0, 0, 0, 0, 0, 0, 48, 0, 0, 48
+"/home/manuareraa/Manu/github/exira/platform/frontend/public/logo.svg", "XML", 0, 0, 0, 0, 0, 0, 0, 6, 0, 1, 7
+"/home/manuareraa/Manu/github/exira/platform/frontend/public/placeholder-logo.svg", "XML", 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1
+"/home/manuareraa/Manu/github/exira/platform/frontend/public/placeholder.svg", "XML", 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1
+"/home/manuareraa/Manu/github/exira/platform/frontend/public/solana.svg", "XML", 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1
+"/home/manuareraa/Manu/github/exira/platform/frontend/public/sui.svg", "XML", 0, 0, 0, 0, 0, 0, 0, 14, 0, 0, 14
+"/home/manuareraa/Manu/github/exira/platform/frontend/styles/globals.css", "CSS", 0, 0, 0, 0, 0, 0, 90, 0, 0, 5, 95
+"/home/manuareraa/Manu/github/exira/platform/frontend/styles/theme.ts", "TypeScript", 0, 0, 31, 0, 0, 0, 0, 0, 0, 4, 35
+"/home/manuareraa/Manu/github/exira/platform/frontend/tailwind.config.ts", "TypeScript", 0, 0, 95, 0, 0, 0, 0, 0, 0, 2, 97
+"/home/manuareraa/Manu/github/exira/platform/frontend/tsconfig.json", "JSON with Comments", 0, 27, 0, 0, 0, 0, 0, 0, 0, 1, 28
+"/home/manuareraa/Manu/github/exira/platform/frontend/types/portfolio.ts", "TypeScript", 0, 0, 36, 0, 0, 0, 0, 0, 0, 6, 42
+"/home/manuareraa/Manu/github/exira/platform/frontend/types/transaction.ts", "TypeScript", 0, 0, 36, 0, 0, 0, 0, 0, 0, 5, 41
+"Total", "-", 13342, 27, 1201, 47, 23, 6679, 180, 71, 127, 1029, 22726
