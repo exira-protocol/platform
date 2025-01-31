@@ -37,7 +37,7 @@ const umi = createUmi(connection).use(mplTokenMetadata());
 
 const a1 = "J6GT31oStsR1pns4t6P7fs3ARFNo9DCoYjANuNJVDyvN";
 const a1PKey =
-  "4ciGA36faeNiPRghC4orxhPDh3GcFx9BnMHHT9gFZfR7btyr9kMFqrDgNEP8XE28ta5AkucCS2LUGzUaW3udeNge"
+  "4ciGA36faeNiPRghC4orxhPDh3GcFx9BnMHHT9gFZfR7btyr9kMFqrDgNEP8XE28ta5AkucCS2LUGzUaW3udeNge";
 const tokenAccount = "3yFiRp3jh3vUrfJiRmB71kqTfnccVpmkgQsoGnnN3JdV";
 
 const keypair = Keypair.fromSecretKey(bs58.decode(a1PKey));
@@ -99,10 +99,11 @@ const mintTokens = async () => {
 };
 
 const getTokenPDA = async () => {
-  const tokenMintAddress = "Fyn2MTFqnGpFQjoaWdmYj43cVYsvbKfUeLdhDp3zmmZT";
-  const tokenPDA = await findAssociatedTokenPda(umi, {
+  let currentUmi = embUmi;
+  const tokenMintAddress = "53XrQrcaY6wb8T3YPByY3MMP5EEZJQRaXqnYznBgvMmX";
+  const tokenPDA = await findAssociatedTokenPda(currentUmi, {
     mint: tokenMintAddress,
-    owner: umi.identity.publicKey,
+    owner: currentUmi.identity.publicKey,
   });
   console.log("Token PDA", tokenPDA);
 };
@@ -165,15 +166,15 @@ const transferTokensv2 = async () => {
     destination: destinationTokenAccount,
     amount: 10, // amount of tokens to transfer*
   }).sendAndConfirm(currentUmi);
-  
+
   console.log("Transfer Raw", transferIx);
   const signature = base58.deserialize(transferIx.signature)[0];
   console.log("Transfer", signature);
 };
 
 // createTokens();
-// getTokenPDA();
-fetchBalance();
+getTokenPDA();
+// fetchBalance();
 // mintTokens();
 // getAllTokenDetails();
 // transferTokensv1();

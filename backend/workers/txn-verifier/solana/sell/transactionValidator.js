@@ -1,6 +1,7 @@
-import { APPROVED_RECEIVERS, APPROVED_TOKEN_MINT } from "./config.js";
+import { APPROVED_RECEIVERS } from "./config.js";
 import { addToUSDCTxn } from "./databaseOperations.js";
 import { supabase } from "./config.js";
+import bs58 from "bs58";
 
 export async function validateTransaction(transaction) {
   try {
@@ -112,51 +113,109 @@ function validateTransactionStructure(transaction) {
   }
 }
 
+const SPL_TOKEN_PROGRAM_ID = "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA";
+
 export function getShareTokensTransferred(transaction) {
-  try {
-    const preBalances = transaction.meta?.preTokenBalances || [];
-    const postBalances = transaction.meta?.postTokenBalances || [];
+  console.log("🔍 Extracting SPL Token Transfer Details...");
 
-    console.log("🔍 Pre Token Balances:", JSON.stringify(preBalances, null, 2));
-    console.log(
-      "🔍 Post Token Balances:",
-      JSON.stringify(postBalances, null, 2)
-    );
+  const accountKeys = transaction.transaction.message.accountKeys || [];
+  const instructions = transaction.transaction.message.instructions || [];
+  const innerInstructions = transaction.meta?.innerInstructions || [];
+  const logMessages = transaction.meta?.logMessages || [];
 
-    if (preBalances.length === 0 || postBalances.length === 0) {
-      console.log(
-        "⚠️ No token balances found! Transaction might not involve a token transfer."
-      );
-      return 0;
+  // 🔍 Step 1: Find "Instruction: TransferChecked" in logs (for verification)
+  const transferLog = logMessages.find((log) =>
+    log.includes("Instruction: TransferChecked")
+  );
+
+  if (!transferLog) {
+    console.error("❌ No SPL TransferChecked instruction found in logs.");
+    return null;
+  }
+  console.log("✅ Found TransferChecked log entry.");
+
+  // 🔍 Step 2: Search for SPL Token Transfer Instruction
+  let splInstruction = null;
+
+  // Check in primary instructions
+  for (const instr of instructions) {
+    const programId = accountKeys[instr.programIdIndex]; // Resolve program ID from index
+    if (programId === SPL_TOKEN_PROGRAM_ID) {
+      splInstruction = instr;
+      break;
     }
+  }
 
-    let senderPre = null;
-    let receiverPost = null;
-
-    for (let i = 0; i < preBalances.length; i++) {
-      const preBalance = preBalances[i]?.uiTokenAmount?.uiAmount || 0;
-      const postBalance = postBalances[i]?.uiTokenAmount?.uiAmount || 0;
-
-      if (preBalance > postBalance) {
-        senderPre = preBalance - postBalance; // Sender's balance decreases
-      } else if (postBalance > preBalance) {
-        receiverPost = postBalance - preBalance; // Receiver's balance increases
+  // Check in inner instructions if not found in primary
+  if (!splInstruction) {
+    for (const innerInstr of innerInstructions) {
+      for (const instr of innerInstr.instructions) {
+        const programId = accountKeys[instr.programIdIndex];
+        if (programId === SPL_TOKEN_PROGRAM_ID) {
+          splInstruction = instr;
+          break;
+        }
       }
+      if (splInstruction) break;
+    }
+  }
+
+  if (!splInstruction) {
+    console.error("❌ No SPL Token transfer instruction found.");
+    return null;
+  }
+
+  console.log("✅ Found SPL Token transfer instruction.");
+
+  // 🔍 Step 3: Extract sender, receiver, and mint
+  const sender = accountKeys[splInstruction.accounts[0]];
+  const receiver = accountKeys[splInstruction.accounts[1]];
+  const tokenMint = accountKeys[splInstruction.accounts[2]];
+
+  // console.log(`📤 Sender: ${sender}`);
+  // console.log(`📥 Receiver: ${receiver}`);
+  // console.log(`🏷️ Token Mint Address: ${tokenMint}`);
+
+  // 🔍 Step 4: Decode the `data` field to get amount
+  const encodedData = splInstruction.data;
+  if (!encodedData) {
+    console.error("❌ No transaction amount found in instruction data.");
+    return null;
+  }
+
+  try {
+    const decodedData = bs58.decode(encodedData);
+    // console.log("🔍 Decoded Data:", decodedData);
+
+    const buffer = Buffer.from(decodedData);
+    // console.log("🔍 Buffer Data:", buffer.toString("hex"));
+
+    if (buffer.length < 10) {
+      throw new Error("Invalid transaction data: Not enough bytes.");
     }
 
-    // Ensure we got a valid transfer amount
-    const amountTransferred = senderPre || receiverPost || 0;
-    console.log(`💰 Corrected Amount Transferred: ${amountTransferred} USDC`);
+    // Extract Discriminator (First byte)
+    const discriminator = buffer.readUInt8(0);
+    // console.log(`🔍 Discriminator: ${discriminator}`);
 
-    if (amountTransferred <= 0) {
-      throw new Error(
-        "Invalid transaction: Amount transferred must be greater than zero."
-      );
+    if (discriminator !== 12) {
+      throw new Error("Invalid SPL TransferChecked instruction.");
     }
 
-    return amountTransferred;
+    // Extract Amount (u64, little-endian)
+    const amountTransferred = Number(buffer.readBigUInt64LE(1));
+
+    // Extract Decimals (Last byte)
+    const decimals = buffer.readUInt8(9);
+    // console.log(`📊 Token Decimals: ${decimals}`);
+
+    // Adjust amount based on decimals
+    const adjustedAmount = amountTransferred / Math.pow(10, decimals);
+    console.log(`💰 Corrected Amount Transferred: ${adjustedAmount}`);
+
+    return adjustedAmount;
   } catch (error) {
-    console.error("❌ Error extracting USDC amount:", error);
-    return 0;
+    console.error("❌ Error decoding SPL Token amount:", error);
+    return null;
   }
 }

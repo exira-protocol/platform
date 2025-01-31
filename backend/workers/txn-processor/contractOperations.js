@@ -14,6 +14,7 @@ import {
   nexUmi,
   embUmi,
   embTokenAccount,
+  embUsdcTokenAccount,
 } from "./config.js";
 import { fetchTransaction } from "./transactionFetcher.js";
 import { addToTokenTxn } from "./databaseOperations.js";
@@ -93,32 +94,81 @@ export async function transferTokens(
         await updateMaxAllowance(shareTokenMintAddress, balance);
       }
     } else if (type === "sell") {
-      const transferIx = await transferV1(umi, {
-        mint: shareTokenMintAddress,
-        tokenOwner: umi.identity.publicKey,
-        destinationOwner: toAddress,
-        amount: BigInt(amount),
-        tokenStandard: TokenStandard.Fungible,
-        token: TOKEN_ACCOUNT,
-      }).sendAndConfirm(umi);
+      let activeUmi = umi;
 
-      const tokenBalance = await getBalance(shareTokenMintAddress);
-      await updateMaxAllowance(shareTokenMintAddress, tokenBalance);
-      const balance = await getBalance(shareTokenMintAddress);
-      await updateUSDCBalance(balance);
+      // APPROVED RECEIVERS:
+      // {"8avB2XNZMbhEh5Qs1UFLtLWQgJVhAKVmeuDg6VYtiurq": "Fyn2MTFqnGpFQjoaWdmYj43cVYsvbKfUeLdhDp3zmmZT", "22wx2tyVWhfjsqhF6MXjpry4rnqZKgAMdPwMsZPsTDZ5": "7KL2fTEWgkeZyCbwGkfvLtHingV3ntFvtS1vT2o48rHZ", "J6GT31oStsR1pns4t6P7fs3ARFNo9DCoYjANuNJVDyvN": "53XrQrcaY6wb8T3YPByY3MMP5EEZJQRaXqnYznBgvMmX"}
 
-      signature = base58.deserialize(transferIx.signature)[0];
-      console.log("Transfer", signature);
+      let tokenAddressFromAuthority = "";
+      let tokenAccount = null;
+
+      // find if the authority is in the approved receivers's keys. If it is then get the value of the key and assign it to a new variable
+      if (authority in APPROVED_RECEIVERS) {
+        tokenAddressFromAuthority = APPROVED_RECEIVERS[authority];
+      }
+
+      if (tokenAddressFromAuthority === nexAddress) {
+        console.log("Active UMI: NEX");
+        activeUmi = nexUmi;
+      } else if (tokenAddressFromAuthority === embAddress) {
+        console.log("Active UMI: EMB");
+        activeUmi = embUmi;
+        tokenAccount = embTokenAccount;
+      } else {
+        throw new Error("Invalid share token mint address.");
+      }
+
+      const currentUSDCBalance = await getBalance(
+        USDC_MINT_ADDRESS,
+        authority,
+        activeUmi
+      );
+
+      let txnStatusUpdated = "";
+      let transferIx = null;
+
+      if (amount >= currentUSDCBalance) {
+        txnStatusUpdated = "processing";
+        return "processing";
+      } else {
+        // ✅ Step 1: Round to 3 decimal places
+        const roundedAmount = Math.round(amount * 1000) / 1000;
+        console.log(`🔍 Rounded Amount (3 decimal places): ${roundedAmount}`);
+
+        // ✅ Step 2: Convert to integer for USDC (scale by 10^6)
+        const scaledAmount = Math.round(roundedAmount * 1_000_000); // Converts to smallest unit
+        console.log(
+          `🔍 Scaled Amount for USDC (integer format): ${scaledAmount}`
+        );
+
+        transferIx = await transferV1(activeUmi, {
+          mint: USDC_MINT_ADDRESS,
+          tokenOwner: activeUmi.identity.publicKey,
+          destinationOwner: toAddress,
+          amount: BigInt(scaledAmount),
+          tokenStandard: TokenStandard.Fungible,
+          token: embUsdcTokenAccount,
+        }).sendAndConfirm(activeUmi);
+        
+        let newUSDCBalance = await getBalance(
+          USDC_MINT_ADDRESS,
+          authority,
+          activeUmi
+        );
+        await updateUSDCBalance("USDC-" + authority, newUSDCBalance);
+        signature = base58.deserialize(transferIx.signature)[0];
+        console.log("Transfer", signature);
+
+        const transaction = await fetchTransaction(signature, "token");
+        console.log("Transaction Two: ", transaction);
+        await addToTokenTxn(transaction, "", "success");
+        return signature;
+      }
     }
 
-    await supabase.rpc("refresh_user_portfolio_mv_incremental", {
-      wallet_address: toAddress,
-    });
-
-    const transaction = await fetchTransaction(signature, "token");
-    console.log("Transaction Two: ", transaction);
-    await addToTokenTxn(transaction, "", "success");
-    return signature;
+    // await supabase.rpc("refresh_user_portfolio_mv_incremental", {
+    //   wallet_address: toAddress,
+    // });
   } catch (error) {
     console.error("Transfer Error", error);
     const transaction = await fetchTransaction(signature);

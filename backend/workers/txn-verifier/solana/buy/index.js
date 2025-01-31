@@ -79,7 +79,7 @@ export async function processTransaction(req, res) {
     const { shareId, pricePerShare, maxAllowance, instantAllowance } =
       await getShareDetails(shareTokenMintAddress);
 
-    await addToUSDCTxn(transaction, "", "success");
+    await addToUSDCTxn(transaction, "", "success", "buy");
 
     // Calculate equivalent shares from transferred USDC
     let shareTokensToTransfer = amountTransferred / pricePerShare;

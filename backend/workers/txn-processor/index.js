@@ -30,23 +30,39 @@ async function processTransaction(job) {
     // Placeholder: Execute blockchain transaction logic
     const { isSuccess, hash } = await executeBlockchainTransaction(payload);
 
-    console.log(`Transaction ${hash} executed`, isSuccess);
+    if (hash === "processing") {
+      console.log(`Transaction ${hash} is still processing`);
+      // Update transaction status in Supabase
+      const { error: updateError } = await supabase
+        .from(TRANSACTIONS_TABLE)
+        .update({
+          status: "processing",
+          token_hash: "",
+        })
+        .eq("usdc_hash", payload.txnHash);
 
-    // Determine new status
-    const newStatus = isSuccess ? "success" : "failed";
+      if (updateError) throw updateError;
 
-    // Update transaction status in Supabase
-    const { error: updateError } = await supabase
-      .from(TRANSACTIONS_TABLE)
-      .update({
-        status: newStatus,
-        token_hash: hash,
-      })
-      .eq("usdc_hash", payload.txnHash);
+      console.log(`Transaction ${payload.txnHash} updated to ${newStatus}`);
+    } else {
+      console.log(`Transaction ${hash} executed`, isSuccess);
 
-    if (updateError) throw updateError;
+      // Determine new status
+      const newStatus = isSuccess ? "success" : "failed";
 
-    console.log(`Transaction ${payload.txnHash} updated to ${newStatus}`);
+      // Update transaction status in Supabase
+      const { error: updateError } = await supabase
+        .from(TRANSACTIONS_TABLE)
+        .update({
+          status: newStatus,
+          token_hash: hash,
+        })
+        .eq("usdc_hash", payload.txnHash);
+
+      if (updateError) throw updateError;
+
+      console.log(`Transaction ${payload.txnHash} updated to ${newStatus}`);
+    }
   } catch (err) {
     console.error(`Transaction ${payload.txnHash} failed:`, err.message);
   }
@@ -63,7 +79,8 @@ async function executeBlockchainTransaction(payload) {
         payload.receiver,
         payload.totalUSDCToSendToUser,
         process.env.USDC_MINT_ADDRESS,
-        payload.type
+        payload.type,
+        payload.authority
       );
       return { isSuccess: true, hash: signature };
     } else if (payload.type === "buy") {

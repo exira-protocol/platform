@@ -1,6 +1,6 @@
 import { supabase } from "./config.js";
 
-export async function addToUSDCTxn(transaction, note, status = "failed") {
+export async function addToUSDCTxn(transaction, note, status = "failed", type) {
   try {
     await supabase.from("usdc_txns").insert([
       {
@@ -12,6 +12,7 @@ export async function addToUSDCTxn(transaction, note, status = "failed") {
         chain: "Solana",
         createdAt: new Date().toISOString(),
         wallet_address: transaction.transaction.message.accountKeys[0],
+        type,
       },
     ]);
     console.log(`✅ Successfully archived transaction`);
@@ -61,7 +62,7 @@ export async function getUserId(walletAddress) {
 export async function getShareDetails(tokenMintAddress) {
   const { data, error } = await supabase
     .from("shares")
-    .select("id, price")
+    .select("id, in_USD")
     .eq("contract_solana", tokenMintAddress)
     .maybeSingle();
 
@@ -69,7 +70,7 @@ export async function getShareDetails(tokenMintAddress) {
     throw new Error("Invalid token mint address, no matching share found.");
   }
 
-  return { shareId: data.id, pricePerShare: data.price };
+  return { shareId: data.id, pricePerShare: data.in_USD };
 }
 
 export async function insertTransaction(transactionData) {

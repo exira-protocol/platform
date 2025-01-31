@@ -34,6 +34,7 @@ const embPKey = process.env.EMB_PRIVATE_KEY;
 const embKeypair = Keypair.fromSecretKey(bs58.decode(embPKey));
 export const embAddress = process.env.EMB_ADDRESS;
 export const embTokenAccount = process.env.EMB_TOKEN_ACCOUNT;
+export const embUsdcTokenAccount = process.env.EMB_USDC_TOKEN_ACCOUNT;
 export const embUmi = createUmi(connection)
   .use(mplTokenMetadata())
   .use(keypairIdentity(embKeypair));

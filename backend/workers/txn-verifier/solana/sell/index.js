@@ -7,7 +7,6 @@ import {
   insertTransaction,
   addMessageToQueue,
 } from "./databaseOperations.js";
-import { transferTokens } from "./tokenTransfer.js";
 import { getShareTokensTransferred } from "./transactionValidator.js";
 import { APPROVED_RECEIVERS } from "./config.js";
 
@@ -44,16 +43,7 @@ export async function processTransaction(req, res) {
       );
     }
 
-    const tokenMintAddress =
-      transaction.meta?.preTokenBalances[0]?.mint || "Unknown";
-
     const userId = await getUserId(sender);
-
-    // const APPROVED_RECEIVERS = {
-    //     J6GT31oStsR1pns4t6P7fs3ARFNo9DCoYjANuNJVDyvN: 2,
-    //     DiaUrAaTkuftHRkEJePworE2uT9ZhcFi1WqkAx53UxHv: 3,
-    //     Ez1Y8ygX8TRwCbDEnu3r24hrjuDvxxy6qc15EKQgPvD5: 4,
-    //   };
 
     let shareTokenMintAddress;
 
@@ -73,7 +63,7 @@ export async function processTransaction(req, res) {
       shareTokenMintAddress
     );
 
-    await addToUSDCTxn(transaction, "", "success");
+    await addToUSDCTxn(transaction, "", "success", "sell");
 
     // sometimes the amount transferred is in decimals, so we need to round it off to the nearest lower integer.
     amountTransferred = Math.floor(amountTransferred);
@@ -99,7 +89,7 @@ export async function processTransaction(req, res) {
       chain: "Solana",
       timestamp: new Date(transaction.blockTime * 1000).toISOString(),
       usdc_hash: signature,
-      token_hash: tokenTransferHash,
+      token_hash: "",
       note: "Transaction processed successfully.",
       status: "queued",
       wallet_address: sender,
@@ -111,7 +101,8 @@ export async function processTransaction(req, res) {
 
     const addQueueResponse = await addMessageToQueue({
       txnHash: signature,
-      receiver,
+      authority: receiver,
+      receiver: sender,
       totalUSDCToSendToUser,
       type: "sell",
     });

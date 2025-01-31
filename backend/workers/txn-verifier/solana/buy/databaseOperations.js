@@ -1,7 +1,7 @@
 import { supabase } from "./config.js";
 // const { supabase } = require("./config.js");
 
-export async function addToUSDCTxn(transaction, note, status = "failed") {
+export async function addToUSDCTxn(transaction, note, status = "failed", type) {
   try {
     await supabase.from("usdc_txns").insert([
       {
@@ -13,6 +13,7 @@ export async function addToUSDCTxn(transaction, note, status = "failed") {
         chain: "Solana",
         createdAt: new Date().toISOString(),
         wallet_address: transaction.transaction.message.accountKeys[0],
+        type,
       },
     ]);
     console.log(`✅ Successfully archived transaction`);
