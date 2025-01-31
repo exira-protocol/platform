@@ -30,6 +30,8 @@ async function processTransaction(job) {
     // Placeholder: Execute blockchain transaction logic
     const { isSuccess, hash } = await executeBlockchainTransaction(payload);
 
+    console.log(`Transaction ${payload.txnHash} executed`, isSuccess);
+
     if (hash === "processing") {
       console.log(`Transaction ${hash} is still processing`);
       // Update transaction status in Supabase
@@ -91,6 +93,7 @@ async function executeBlockchainTransaction(payload) {
         payload.type,
         payload.authority
       );
+      console.log(`Transaction hash from TransferTokens: ${signature}`);
       return { isSuccess: true, hash: signature };
     }
   } catch (error) {

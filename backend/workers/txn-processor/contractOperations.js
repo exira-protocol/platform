@@ -93,6 +93,8 @@ export async function transferTokens(
       if (maxAllowance !== balance) {
         await updateMaxAllowance(shareTokenMintAddress, balance);
       }
+
+      return signature;
     } else if (type === "sell") {
       let activeUmi = umi;
 
@@ -149,7 +151,7 @@ export async function transferTokens(
           tokenStandard: TokenStandard.Fungible,
           token: embUsdcTokenAccount,
         }).sendAndConfirm(activeUmi);
-        
+
         let newUSDCBalance = await getBalance(
           USDC_MINT_ADDRESS,
           authority,
