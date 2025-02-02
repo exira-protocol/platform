@@ -55,16 +55,44 @@ async function validateDuplicateHash(transaction) {
   }
 }
 
-async function validateReceiver(transaction) {
-  const receiver = transaction.meta?.postTokenBalances[0]?.owner || "Unknown";
+// async function validateReceiver(transaction) {
+//   const receiver = transaction.meta?.postTokenBalances[0]?.owner || "Unknown";
 
-  if (!(receiver in APPROVED_RECEIVERS)) {
+//   console.log(`📥 Receiver: ${receiver}`);
+
+//   if (!(receiver in APPROVED_RECEIVERS)) {
+//     throw new Error(
+//       "Transaction receiver is not approved. Please check the receiver address. [validator.js]"
+//     );
+//   }
+
+//   return APPROVED_RECEIVERS[receiver];
+// }
+
+export async function validateReceiver(transaction) {
+  // Extract owners from both preTokenBalances and postTokenBalances
+  const preOwners =
+    transaction.meta?.preTokenBalances?.map((b) => b.owner) || [];
+  const postOwners =
+    transaction.meta?.postTokenBalances?.map((b) => b.owner) || [];
+
+  // Combine and remove duplicates
+  const uniqueOwners = [...new Set([...preOwners, ...postOwners])];
+
+  console.log(`📥 Unique Owners Found:`, uniqueOwners);
+
+  // Find the first approved receiver in the unique owners list
+  const receiver = uniqueOwners.find((owner) => owner in APPROVED_RECEIVERS);
+
+  if (!receiver) {
     throw new Error(
-      "Transaction receiver is not approved. Please check the receiver address."
+      "Transaction receiver is not approved. Please check the receiver address. [validator.js]"
     );
   }
 
-  return APPROVED_RECEIVERS[receiver];
+  console.log(`✅ Approved Receiver Found: ${receiver}`);
+
+  return APPROVED_RECEIVERS[receiver]; // Return corresponding share ID or token mint address
 }
 
 async function validateTokenMintAddress(transaction) {

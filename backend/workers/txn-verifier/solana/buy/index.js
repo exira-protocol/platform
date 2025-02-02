@@ -1,5 +1,5 @@
 import { fetchTransaction } from "./transactionFetcher.js";
-import { validateTransaction } from "./transactionValidator.js";
+import { validateReceiver, validateTransaction } from "./transactionValidator.js";
 import {
   addToUSDCTxn,
   getUserId,
@@ -62,15 +62,17 @@ export async function processTransaction(req, res) {
 
     const userId = await getUserId(sender);
 
-    let shareTokenMintAddress;
+    let shareTokenMintAddress = await validateReceiver(transaction);
 
-    if (!(receiver in APPROVED_RECEIVERS)) {
-      throw new Error(
-        "Transaction receiver is not approved. Please check the receiver address."
-      );
-    } else {
-      shareTokenMintAddress = APPROVED_RECEIVERS[receiver];
-    }
+    // if (!(receiver in APPROVED_RECEIVERS)) {
+    //   throw new Error(
+    //     "Transaction receiver is not approved. Please check the receiver address. [index.js]"
+    //   );
+    // } else {
+    //   shareTokenMintAddress = APPROVED_RECEIVERS[receiver];
+    // }
+
+    
 
     console.log("🔍 Share Token Mint Address:", shareTokenMintAddress);
     console.log("Receiver:", receiver);

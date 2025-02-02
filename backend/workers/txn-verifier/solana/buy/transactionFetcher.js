@@ -12,11 +12,11 @@ export async function fetchTransaction(signature, txnType) {
 
   if (txnType === "usdc") {
     console.log(`🔍 Fetching USDC transaction...`);
-    maxRetries = 3;
-    retryInterval = 2000;
+    maxRetries = 7;
+    retryInterval = 3000;
   } else if (txnType === "token") {
     console.log(`🔍 Fetching token transaction...`);
-    maxRetries = 3;
+    maxRetries = 7;
     retryInterval = 3000;
   }
 

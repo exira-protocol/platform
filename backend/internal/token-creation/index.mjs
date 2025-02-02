@@ -109,8 +109,10 @@ const getTokenPDA = async () => {
 };
 
 const fetchBalance = async () => {
-  let tokenMintAddress = "Fyn2MTFqnGpFQjoaWdmYj43cVYsvbKfUeLdhDp3zmmZT";
+  let tokenMintAddress = "53XrQrcaY6wb8T3YPByY3MMP5EEZJQRaXqnYznBgvMmX";
+
   let currentUmi = embUmi;
+  console.log("Current UMI", currentUmi.identity.publicKey.toBase58());
   const balance = await fetchAllTokenByOwnerAndMint(
     currentUmi,
     currentUmi.identity.publicKey,
@@ -173,8 +175,8 @@ const transferTokensv2 = async () => {
 };
 
 // createTokens();
-getTokenPDA();
-// fetchBalance();
+// getTokenPDA();
+fetchBalance();
 // mintTokens();
 // getAllTokenDetails();
 // transferTokensv1();

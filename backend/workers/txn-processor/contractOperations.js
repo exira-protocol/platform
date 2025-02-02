@@ -105,8 +105,12 @@ export async function transferTokens(
       let tokenAccount = null;
 
       // find if the authority is in the approved receivers's keys. If it is then get the value of the key and assign it to a new variable
+      console.log("Authority", authority);
       if (authority in APPROVED_RECEIVERS) {
         tokenAddressFromAuthority = APPROVED_RECEIVERS[authority];
+        console.log("Token Address from Authority", tokenAddressFromAuthority);
+      } else {
+        throw new Error("Invalid authority.");
       }
 
       if (tokenAddressFromAuthority === nexAddress) {

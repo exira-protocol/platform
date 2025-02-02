@@ -51,27 +51,97 @@ async function validateDuplicateHash(transaction) {
   }
 }
 
-async function validateReceiver(transaction) {
-  const receiver = transaction.meta?.postTokenBalances[0]?.owner || "Unknown";
+// async function validateReceiver(transaction) {
+//   const receiver = transaction.meta?.postTokenBalances[0]?.owner || "Unknown";
 
-  if (!(receiver in APPROVED_RECEIVERS)) {
-    throw new Error("Transaction receiver is not approved.");
+//   if (!(receiver in APPROVED_RECEIVERS)) {
+//     throw new Error("Transaction receiver is not approved.");
+//   }
+
+//   console.log(`Receiver is approved: ${receiver}`);
+//   return APPROVED_RECEIVERS[receiver]; // Returns expected token mint address for this receiver
+// }
+
+// export async function validateReceiver(transaction) {
+//   // Extract owners from both preTokenBalances and postTokenBalances
+//   const preOwners =
+//     transaction.meta?.preTokenBalances?.map((b) => b.owner) || [];
+//   const postOwners =
+//     transaction.meta?.postTokenBalances?.map((b) => b.owner) || [];
+
+//   // Combine and remove duplicates
+//   const uniqueOwners = [...new Set([...preOwners, ...postOwners])];
+
+//   console.log(`📥 Unique Owners Found:`, uniqueOwners);
+
+//   // Find the first approved receiver in the unique owners list
+//   const receiver = uniqueOwners.find((owner) => owner in APPROVED_RECEIVERS);
+
+//   if (!receiver) {
+//     throw new Error(
+//       "Transaction receiver is not approved. Please check the receiver address. [validator.js]"
+//     );
+//   }
+
+//   console.log(`✅ Approved Receiver Found: ${receiver}`);
+
+//   return APPROVED_RECEIVERS[receiver]; // Return corresponding share ID or token mint address
+// }
+
+export async function validateReceiver(transaction) {
+  // Extract owners from both preTokenBalances and postTokenBalances
+  const preOwners =
+    transaction.meta?.preTokenBalances?.map((b) => b.owner) || [];
+  const postOwners =
+    transaction.meta?.postTokenBalances?.map((b) => b.owner) || [];
+
+  // Combine and remove duplicates
+  const uniqueOwners = [...new Set([...preOwners, ...postOwners])];
+
+  console.log(`📥 Unique Owners Found:`, uniqueOwners);
+
+  if (uniqueOwners.length !== 2) {
+    throw new Error(
+      `Unexpected number of unique owners: ${uniqueOwners.length}. Expected exactly 2 addresses.`
+    );
   }
 
-  console.log(`Receiver is approved: ${receiver}`);
-  return APPROVED_RECEIVERS[receiver]; // Returns expected token mint address for this receiver
+  // Find the approved receiver (authority)
+  const authority = uniqueOwners.find((owner) => owner in APPROVED_RECEIVERS);
+
+  if (!authority) {
+    throw new Error(
+      "Transaction receiver is not approved. Please check the receiver address. [validator.js]"
+    );
+  }
+
+  // Identify the other user (non-approved address)
+  const user = uniqueOwners.find((owner) => owner !== authority);
+
+  console.log("Authority Address:", authority);
+  console.log("User Address:", user);
+  console.log("Mint Token Address:", APPROVED_RECEIVERS[authority]);
+
+  return {
+    authorityAddress: authority, // Share ID or token mint address
+    mintTokenAddress: APPROVED_RECEIVERS[authority], // Share ID or token mint address
+    userAddress: user, // The other wallet address
+  };
 }
 
 async function validateTokenMintAddress(transaction) {
   const tokenMintAddress =
     transaction.meta?.preTokenBalances[0]?.mint || "Unknown";
-  const receiver = transaction.meta?.postTokenBalances[0]?.owner || "Unknown";
+  // const receiver = transaction.meta?.postTokenBalances[0]?.owner || "Unknown";
 
-  if (!(receiver in APPROVED_RECEIVERS)) {
-    throw new Error("Receiver is not approved. Transaction rejected.");
-  }
+  // if (!(receiver in APPROVED_RECEIVERS)) {
+  //   throw new Error("Receiver is not approved. Transaction rejected.");
+  // }
 
-  const expectedTokenMint = APPROVED_RECEIVERS[receiver];
+  const { authorityAddress, mintTokenAddress, userAddress } =
+    await validateReceiver(transaction);
+
+  const expectedTokenMint = mintTokenAddress;
 
   if (tokenMintAddress !== expectedTokenMint) {
     throw new Error(

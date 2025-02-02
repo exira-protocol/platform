@@ -99,3 +99,19 @@ export async function addMessageToQueue(payload) {
   console.log("Message added to queue successfully:", data);
   return true;
 }
+
+export async function getUSDCBalanceFromSysConfig(listenAddress) {
+  const { data, error } = await supabase
+    .from("system_config")
+    .select("value")
+    .eq("key", listenAddress)
+    .single();
+
+  if (error) {
+    console.error("Error fetching USDC balance:", error);
+    return;
+  }
+
+  console.log("USDC balance fetched successfully:", data);
+  return data.value;
+}

@@ -5,8 +5,39 @@ import { keypairIdentity } from "@metaplex-foundation/umi";
 import bs58 from "bs58";
 import { createClient } from "@supabase/supabase-js";
 import dotenv from "dotenv";
+import winston from "winston";
+import DailyRotateFile from "winston-daily-rotate-file";
+import fs from "fs";
 
 dotenv.config();
+
+// Ensure logs directory exists
+const logDir = "./logs";
+if (!fs.existsSync(logDir)) {
+  fs.mkdirSync(logDir);
+}
+
+// Configure logger
+export const logger = winston.createLogger({
+  level: "info",
+  format: winston.format.combine(
+    winston.format.timestamp(),
+    winston.format.printf(({ timestamp, level, message }) => {
+      return `${timestamp} [${level.toUpperCase()}]: ${message}`;
+    })
+  ),
+  transports: [
+    new DailyRotateFile({
+      filename: `${logDir}/worker-%DATE%.log`,
+      datePattern: "YYYY-MM-DD-HH",
+      zippedArchive: true,
+      maxSize: "20m",
+      maxFiles: "7d",
+      interval: "6h", // Log rotation every 6 hours
+    }),
+    new winston.transports.Console(),
+  ],
+});
 
 export const SOLANA_RPC_URL =
   process.env.SOLANA_RPC_URL || "https://api.devnet.solana.com";

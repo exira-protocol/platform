@@ -9,6 +9,8 @@ import {
 } from "./databaseOperations.js";
 import { getShareTokensTransferred } from "./transactionValidator.js";
 import { APPROVED_RECEIVERS } from "./config.js";
+import { validateReceiver } from "./transactionValidator.js";
+import { getUSDCBalanceFromSysConfig } from "./databaseOperations.js";
 
 export async function processTransaction(req, res) {
   console.log(`🚀 Starting transaction processing`);
@@ -32,8 +34,21 @@ export async function processTransaction(req, res) {
 
     await validateTransaction(transaction);
 
-    const sender = transaction.transaction.message.accountKeys[0];
-    const receiver = transaction.meta?.postTokenBalances[0]?.owner || "Unknown";
+    // return {
+    //   authorityAddress: APPROVED_RECEIVERS[authority], // Share ID or token mint address
+    //   mintTokenAddress: APPROVED_RECEIVERS[authority], // Share ID or token mint address
+    //   userAddress: user, // The other wallet address
+    // };
+
+    let { authorityAddress, mintTokenAddress, userAddress } =
+      await validateReceiver(transaction);
+
+    let shareTokenMintAddress = mintTokenAddress;
+
+    // the user address
+    const sender = userAddress;
+    // the authority address
+    const receiver = authorityAddress;
 
     let amountTransferred = getShareTokensTransferred(transaction);
 
@@ -45,15 +60,15 @@ export async function processTransaction(req, res) {
 
     const userId = await getUserId(sender);
 
-    let shareTokenMintAddress;
+    // let shareTokenMintAddress = await validateReceiver(transaction);
 
-    if (!(receiver in APPROVED_RECEIVERS)) {
-      throw new Error(
-        "Transaction receiver is not approved. Please check the receiver address."
-      );
-    } else {
-      shareTokenMintAddress = APPROVED_RECEIVERS[receiver];
-    }
+    // if (!(receiver in APPROVED_RECEIVERS)) {
+    //   throw new Error(
+    //     "Transaction receiver is not approved. Please check the receiver address."
+    //   );
+    // } else {
+    //   shareTokenMintAddress = APPROVED_RECEIVERS[receiver];
+    // }
 
     console.log("🔍 Share Token Mint Address:", shareTokenMintAddress);
     console.log("Receiver:", receiver);
@@ -80,6 +95,18 @@ export async function processTransaction(req, res) {
     //   totalUSDCToSendToUser
     // );
 
+    const balanceResponse = await getUSDCBalanceFromSysConfig(
+      "USDC-" + receiver
+    );
+
+    let txnStatus = "queued";
+
+    console.log(`Balance response: ${balanceResponse}`);
+
+    if (balanceResponse >= totalUSDCToSendToUser) {
+      txnStatus = "processing";
+    }
+
     const transactionData = {
       user_id: userId,
       share_id: shareId,
@@ -91,11 +118,17 @@ export async function processTransaction(req, res) {
       usdc_hash: signature,
       token_hash: "",
       note: "Transaction processed successfully.",
-      status: "queued",
+      status: txnStatus,
       wallet_address: sender,
     };
 
     await insertTransaction(transactionData);
+
+    if (balanceResponse <= totalUSDCToSendToUser) {
+      return res.status(204).json({
+        message: "Transaction processed and stored successfully.",
+      });
+    }
 
     console.log(`Transaction successfully processed and stored`);
 
