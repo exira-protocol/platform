@@ -1,0 +1,75 @@
+diff --git a/node_modules/@metaplex-foundation/umi/dist/esm/Transaction.mjs b/node_modules/@metaplex-foundation/umi/dist/esm/Transaction.mjs
+index 8ece854..5df93d5 100644
+--- a/node_modules/@metaplex-foundation/umi/dist/esm/Transaction.mjs
++++ b/node_modules/@metaplex-foundation/umi/dist/esm/Transaction.mjs
+@@ -7,7 +7,7 @@ const TRANSACTION_SIZE_LIMIT = 1232;
+ /**
+  * The version of a transaction.
+  * - Legacy is the very first iteration of Solana transactions.
+- * - V0 introduces the concept of versioned transaction for
++ * - V0 introduces the concept of versionned transaction for
+  * the first time and adds supports for address lookup tables.
+  *
+  * @category Transactions
+@@ -19,18 +19,58 @@ const TRANSACTION_SIZE_LIMIT = 1232;
+  *
+  * @category Transactions
+  */
++// const addTransactionSignature = (transaction, signature, signerPublicKey) => {
++//   const maxSigners = transaction.message.header.numRequiredSignatures;
++//   const signerPublicKeys = transaction.message.accounts.slice(0, maxSigners);
++//   console.log('signerPublicKeys', signerPublicKeys);
++//   console.log('signerPublicKey', signerPublicKey);
++//   const signerIndex = signerPublicKeys.findIndex(key => key === signerPublicKey);
++//   console.log('signerIndex', signerIndex);
++//   if (signerIndex < 0) {
++//     throw new Error('The provided signer is not required to sign this transaction.');
++//   }
++//   const newSignatures = [...transaction.signatures];
++//   newSignatures[signerIndex] = signature;
++//   return {
++//     ...transaction,
++//     signatures: newSignatures
++//   };
++// };
++
++import { PublicKey } from "@solana/web3.js";
++
+ const addTransactionSignature = (transaction, signature, signerPublicKey) => {
+   const maxSigners = transaction.message.header.numRequiredSignatures;
+   const signerPublicKeys = transaction.message.accounts.slice(0, maxSigners);
+-  const signerIndex = signerPublicKeys.findIndex(key => key === signerPublicKey);
++
++  // Ensure signerPublicKey is converted to a string safely
++  const signerKeyString =
++    typeof signerPublicKey === "string"
++      ? signerPublicKey
++      : new PublicKey(signerPublicKey).toBase58();
++
++  // console.log("signerPublicKeys", signerPublicKeys);
++  // console.log("signerPublicKey", signerKeyString);
++
++  // Compare strings
++  const signerIndex = signerPublicKeys.findIndex(
++    (key) => key === signerKeyString
++  );
++
++  // console.log("signerIndex", signerIndex);
++
+   if (signerIndex < 0) {
+-    throw new Error('The provided signer is not required to sign this transaction.');
++    throw new Error(
++      "The provided signer is not required to sign this transaction."
++    );
+   }
++
+   const newSignatures = [...transaction.signatures];
+   newSignatures[signerIndex] = signature;
++
+   return {
+     ...transaction,
+-    signatures: newSignatures
++    signatures: newSignatures,
+   };
+ };
+ 
