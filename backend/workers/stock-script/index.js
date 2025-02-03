@@ -1,8 +1,16 @@
-require("dotenv").config();
-const axios = require("axios");
-const { createClient } = require("@supabase/supabase-js");
-const winston = require("winston");
-const DailyRotateFile = require("winston-daily-rotate-file");
+// require("dotenv").config();
+// const axios = require("axios");
+// const { createClient } = require("@supabase/supabase-js");
+// const winston = require("winston");
+// const DailyRotateFile = require("winston-daily-rotate-file");
+
+import axios from "axios";
+import { createClient } from "@supabase/supabase-js";
+import winston from "winston";
+import DailyRotateFile from "winston-daily-rotate-file";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 // Load environment variables
 const SUPABASE_URL = process.env.SUPABASE_URL;
@@ -42,8 +50,8 @@ const stockMap = {
   "Brookfield REIT": "EXBRK",
 };
 
-TELEGRAM_BOT = process.env.TELEGRAM_BOT_TOKEN;
-TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID;
+const TELEGRAM_BOT = process.env.TELEGRAM_BOT_TOKEN;
+const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID;
 
 async function sendTelegramAlert(message) {
   try {
