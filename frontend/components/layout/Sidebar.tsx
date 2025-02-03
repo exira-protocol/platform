@@ -1,23 +1,26 @@
-import React from 'react'
-import Image from 'next/image'
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
-import { cn } from '@/lib/utils'
-import { sidebarConfig } from '@/config/sidebar'
-import ContactModal from '../shared/ContactModal'
-import { useGlobalState } from '@/context/GlobalStateContext'
+import React from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { cn } from "@/lib/utils";
+import { sidebarConfig } from "@/config/sidebar";
+import ContactModal from "../shared/ContactModal";
+import { useGlobalState } from "@/context/GlobalStateContext";
 
 export default function Sidebar() {
-  const pathname = usePathname()
-  const { isWalletConnected, setWalletAddress, setIsWalletConnected } = useGlobalState()
+  const pathname = usePathname();
+  const { isWalletConnected, setWalletAddress, setIsWalletConnected } =
+    useGlobalState();
 
   const handleLogout = () => {
     // Disconnect the wallet
-    setWalletAddress(null)
-    setIsWalletConnected(false)
+    setWalletAddress(null);
+    setIsWalletConnected(false);
+    // reload the page
+    window.location.reload();
     // You might want to add additional logout logic here
-    console.log('User logged out')
-  }
+    console.log("User logged out");
+  };
 
   return (
     <div className="fixed left-4 top-4 bottom-4 w-64 bg-white dark:bg-gray-800 rounded-3xl shadow-lg flex flex-col overflow-hidden">
@@ -53,11 +56,12 @@ export default function Sidebar() {
             "bg-black text-white hover:bg-gray-900 dark:bg-white dark:text-black dark:hover:bg-gray-100"
           )}
         >
-          {React.createElement(sidebarConfig.bottomItems[1].icon, { className: "mr-3 h-5 w-5" })}
-          <span>{isWalletConnected ? 'Disconnect' : 'Logout'}</span>
+          {React.createElement(sidebarConfig.bottomItems[1].icon, {
+            className: "mr-3 h-5 w-5",
+          })}
+          <span>{isWalletConnected ? "Disconnect" : "Logout"}</span>
         </button>
       </div>
     </div>
-  )
+  );
 }
-

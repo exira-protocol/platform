@@ -82,6 +82,9 @@ export function useDashboardData() {
         console.log("tokensData fetched:", tokensData);
       }
 
+      // sort tokens by token id
+      tokensData.sort((a, b) => a.id - b.id);
+
       setTokens(
         tokensData.map((token) => ({
           id: token.id,

@@ -187,9 +187,14 @@ export function CryptoTable({
                             <ExternalLink className="h-4 w-4 mr-1" />
                             Solscan
                           </Button>
-                          <Button size="sm" onClick={() => onSelect(token)}>
+                          <Button
+                            size="sm"
+                            disabled={token.id !== 2 ? true : false}
+                            onClick={() => onSelect(token)}
+                            className="disabled:opacity-50"
+                          >
                             <ArrowRight className="h-4 w-4 mr-1" />
-                            Buy
+                            {token.id === 2 ? "Buy" : "Soon"}
                           </Button>
                         </div>
                       </TableCell>

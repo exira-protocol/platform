@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
-import { MessageCircle } from 'lucide-react'
-import { cn } from '@/lib/utils'
+import React, { useState } from "react";
+import { MessageCircle } from "lucide-react";
+import { cn } from "@/lib/utils";
 import {
   Dialog,
   DialogContent,
@@ -9,30 +9,30 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Textarea } from '@/components/ui/textarea'
-import { Button } from '@/components/ui/button'
-import { useToast } from '@/components/ui/use-toast'
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import { useToast } from "@/components/ui/use-toast";
 
 export default function ContactModal() {
-  const [open, setOpen] = useState(false)
-  const [email, setEmail] = useState('')
-  const [message, setMessage] = useState('')
-  const { toast } = useToast()
+  const [open, setOpen] = useState(false);
+  const [email, setEmail] = useState("");
+  const [message, setMessage] = useState("");
+  const { toast } = useToast();
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    console.log('Submitted:', { email, message })
+    e.preventDefault();
+    console.log("Submitted:", { email, message });
     toast({
       title: "Message Sent",
       description: "We've received your message and will get back to you soon.",
-    })
-    setOpen(false)
-    setEmail('')
-    setMessage('')
-  }
+    });
+    setOpen(false);
+    setEmail("");
+    setMessage("");
+  };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -51,10 +51,16 @@ export default function ContactModal() {
         <DialogHeader>
           <DialogTitle>Contact Us</DialogTitle>
           <DialogDescription>
-            Send us a message and we'll get back to you as soon as possible.
+            Send us a message along with your wallet address and we'll get back
+            to you as soon as possible. Mail us at <strong>contact@exira.io</strong>
+            <a
+              href="mailto:contact@exira.io"
+              className="text-blue-500"
+              target="_blank"
+            />
           </DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit}>
+        {/* <form onSubmit={handleSubmit}>
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="email" className="text-right">
@@ -85,9 +91,8 @@ export default function ContactModal() {
           <DialogFooter>
             <Button type="submit">Send message</Button>
           </DialogFooter>
-        </form>
+        </form> */}
       </DialogContent>
     </Dialog>
-  )
+  );
 }
-

@@ -10,7 +10,7 @@ import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { base58 } from "@metaplex-foundation/umi/serializers";
 import { initializeUmi } from "./solanaUtils";
 import axios from "axios";
-import { createClient } from "@supabase/supabase-js";
+import { supabase } from "@/lib/supabase";
 
 interface TransactionValues {
   amount: string;
@@ -42,10 +42,6 @@ export const WithdrawPanel: React.FC<WithdrawPanelProps> = ({
 
   const listenForUsdcBalance = async () => {
     console.log("🔍 Listening for USDC balance updates...");
-
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-    const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
     let usdc = 0;
 
@@ -95,10 +91,6 @@ export const WithdrawPanel: React.FC<WithdrawPanelProps> = ({
     usdcHash: string,
     toastId
   ): Promise<string> => {
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-    const supabase = createClient(supabaseUrl, supabaseAnonKey);
-
     return new Promise(async (resolve, reject) => {
       console.log(`🔍 Checking initial transaction status for ID: ${usdcHash}`);
 

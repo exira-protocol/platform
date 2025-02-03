@@ -18,7 +18,7 @@ const takePortfolioSnapshot = async () => {
     // Fetch latest portfolio values from user_portfolio_mv
     const { data: userPortfolios, error } = await supabase
       .from("user_portfolio_mv")
-      .select("user_id, total_portfolio_value");
+      .select("user_id, wallet_address, current_portfolio_value");
 
     if (error) {
       console.error("❌ Error fetching user portfolios:", error);
@@ -30,13 +30,21 @@ const takePortfolioSnapshot = async () => {
       return;
     }
 
+    console.log(
+      `🔍 Fetched ${userPortfolios.length} user portfolios.`,
+      userPortfolios
+    );
+
     // Prepare bulk insert payload
     const timestamp = new Date().toISOString();
     const snapshots = userPortfolios.map((user) => ({
       user_id: user.user_id,
-      portfolio_value: user.total_portfolio_value,
+      portfolio_value: user.current_portfolio_value,
       timestamp,
+      wallet_address: user.wallet_address,
     }));
+
+    console.log("📦 Snapshot payload:", snapshots);
 
     // Insert into portfolio_timeseries table
     const { error: insertError } = await supabase
@@ -56,7 +64,10 @@ const takePortfolioSnapshot = async () => {
 };
 
 // Schedule the worker to run every 30 minutes
-cron.schedule("*/30 * * * *", async () => {
+// cron.schedule("*/30 * * * *", async () => {
+//   await takePortfolioSnapshot();
+// });
+cron.schedule("*/5 * * * * *", async () => {
   await takePortfolioSnapshot();
 });
 

@@ -13,6 +13,7 @@ import { base58 } from "@metaplex-foundation/umi/serializers";
 import { initializeUmi } from "./solanaUtils";
 import axios from "axios";
 import { createClient } from "@supabase/supabase-js";
+import { supabase } from "@/lib/supabase";
 
 interface TransactionValues {
   amount: string;
@@ -49,10 +50,6 @@ export const TransactionPanel: React.FC<TransactionPanelProps> = ({
     usdcHash: string,
     toastId
   ): Promise<string> => {
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-    const supabase = createClient(supabaseUrl, supabaseAnonKey);
-
     return new Promise(async (resolve, reject) => {
       console.log(`🔍 Checking initial transaction status for ID: ${usdcHash}`);
 
@@ -179,7 +176,9 @@ export const TransactionPanel: React.FC<TransactionPanelProps> = ({
       const USDCAddress = "53XrQrcaY6wb8T3YPByY3MMP5EEZJQRaXqnYznBgvMmX";
       // const toAddress = "8avB2XNZMbhEh5Qs1UFLtLWQgJVhAKVmeuDg6VYtiurq";
 
-      const preciseAmount = parseFloat(transactionValues.amount).toFixed(4);
+      const preciseAmount =
+        parseFloat(transactionValues.amount) +
+        (parseFloat(transactionValues.amount) * selectedToken.mintFee) / 100;
       const scaledAmount = Math.round(preciseAmount * 1_000_000); // Convert to USDC smallest unit
 
       console.log("1.2 Processing USDC transaction", scaledAmount);
