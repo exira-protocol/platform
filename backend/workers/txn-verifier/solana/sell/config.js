@@ -53,8 +53,8 @@ export const APPROVED_RECEIVERS = JSON.parse(
 
 export const USDC_TOKEN_MINT_ADDRESS = process.env.USDC_TOKEN_MINT_ADDRESS;
 
-const a1PKey = process.env.MASTER_PRIV_KEY;
-const keypair = Keypair.fromSecretKey(bs58.decode(a1PKey));
+const EMB_PRIV_KEY = process.env.EMB_PRIVATE_KEY;
+const keypair = Keypair.fromSecretKey(bs58.decode(EMB_PRIV_KEY));
 
 export const umi = createUmi(connection)
   .use(mplTokenMetadata())
