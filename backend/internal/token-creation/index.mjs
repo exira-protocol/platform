@@ -35,10 +35,10 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-// const connection = new Connection("https://api.devnet.solana.com");
-const connection = new Connection(
-  "https://summer-icy-bridge.solana-mainnet.quiknode.pro/59676b80a658b61070b734ff307bb7f2b5908e40"
-);
+const connection = new Connection("https://api.devnet.solana.com");
+// const connection = new Connection(
+//   "https://summer-icy-bridge.solana-mainnet.quiknode.pro/59676b80a658b61070b734ff307bb7f2b5908e40"
+// );
 const umi = createUmi(connection).use(mplTokenMetadata());
 
 const a1 = "J6GT31oStsR1pns4t6P7fs3ARFNo9DCoYjANuNJVDyvN";
@@ -121,8 +121,9 @@ const mintTokens = async () => {
 };
 
 const getTokenPDA = async () => {
-  let currentUmi = embMainnetUmi;
-  const tokenMintAddress = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v";
+  // let currentUmi = embMainnetUmi;
+  let currentUmi = umi;
+  const tokenMintAddress = "53XrQrcaY6wb8T3YPByY3MMP5EEZJQRaXqnYznBgvMmX";
   const tokenPDA = await findAssociatedTokenPda(currentUmi, {
     mint: tokenMintAddress,
     owner: currentUmi.identity.publicKey,

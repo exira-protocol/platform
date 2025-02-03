@@ -64,11 +64,11 @@ const takePortfolioSnapshot = async () => {
 };
 
 // Schedule the worker to run every 30 minutes
-// cron.schedule("*/30 * * * *", async () => {
-//   await takePortfolioSnapshot();
-// });
-cron.schedule("*/5 * * * * *", async () => {
+cron.schedule("*/30 * * * *", async () => {
   await takePortfolioSnapshot();
 });
+// cron.schedule("*/5 * * * * *", async () => {
+//   await takePortfolioSnapshot();
+// });
 
 console.log("🚀 Portfolio snapshot worker started. Running every 30 minutes.");

@@ -169,7 +169,6 @@ async function main() {
   while (true) {
     await fetchStockPrices();
 
-    // Calculate dynamic delay (30mins fixed + random 10-30s)
     const randomDelay = 1800 + Math.floor(Math.random() * 21);
     logger.info(`Waiting for ${randomDelay} seconds before next fetch.`);
 
