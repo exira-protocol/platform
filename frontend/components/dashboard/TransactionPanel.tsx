@@ -173,7 +173,8 @@ export const TransactionPanel: React.FC<TransactionPanelProps> = ({
       // Original
       // const USDCAddress = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v";
       // Dummy
-      const USDCAddress = "53XrQrcaY6wb8T3YPByY3MMP5EEZJQRaXqnYznBgvMmX";
+      // const USDCAddress = "53XrQrcaY6wb8T3YPByY3MMP5EEZJQRaXqnYznBgvMmX";
+      const USDCAddress = process.env.NEXT_PUBLIC_USDC_ADDRESS || "";
       // const toAddress = "8avB2XNZMbhEh5Qs1UFLtLWQgJVhAKVmeuDg6VYtiurq";
 
       const preciseAmount =
