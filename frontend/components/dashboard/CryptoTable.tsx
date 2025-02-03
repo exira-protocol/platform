@@ -173,15 +173,11 @@ export function CryptoTable({
                             size="sm"
                             onClick={() => {
                               // onViewToken(token)
-                              if (selectedNetwork === "Solana") {
-                                window.open(
-                                  "https://solscan.io/token/" +
-                                    token.contract_solana,
-                                  "_blank"
-                                );
-                              } else {
-                                alert("We don't support this network yet.");
-                              }
+                              window.open(
+                                "https://solscan.io/token/" +
+                                  token.contract_solana,
+                                "_blank"
+                              );
                             }}
                           >
                             <ExternalLink className="h-4 w-4 mr-1" />

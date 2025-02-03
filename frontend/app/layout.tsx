@@ -1,20 +1,25 @@
-import type { Metadata } from 'next'
-import { Lexend } from 'next/font/google'
-import './globals.css'
-import { ThemeProvider } from '@/lib/theme'
-import { Layout } from '@/components/layout/Layout'
+import type { Metadata } from "next";
+import { Lexend } from "next/font/google";
+import "./globals.css";
+import { ThemeProvider } from "@/lib/theme";
+import { Layout } from "@/components/layout/Layout";
+import Head from "next/head";
+import { url } from "inspector";
 
-const lexend = Lexend({ subsets: ['latin'] })
+const lexend = Lexend({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: 'Exira DeFi Protocol',
-  description: 'Decentralized Finance Protocol',
-}
+  title: "Exira DeFi Protocol",
+  description: "Decentralized Finance Protocol",
+  icons: {
+    icon: "/favicon.png",
+  },
+};
 
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
@@ -25,12 +30,9 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <Layout>
-            {children}
-          </Layout>
+          <Layout>{children}</Layout>
         </ThemeProvider>
       </body>
     </html>
-  )
+  );
 }
-
