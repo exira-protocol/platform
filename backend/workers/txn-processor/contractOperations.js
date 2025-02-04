@@ -5,13 +5,9 @@ import {
 import { fetchAllTokenByOwnerAndMint } from "@metaplex-foundation/mpl-toolbox";
 import { base58 } from "@metaplex-foundation/umi/serializers";
 import {
-  umi,
   USDC_MINT_ADDRESS,
-  TOKEN_ACCOUNT,
   APPROVED_RECEIVERS,
   embAddress,
-  nexAddress,
-  nexUmi,
   embUmi,
   embTokenAccount,
   embUsdcTokenAccount,
@@ -36,13 +32,18 @@ export async function transferTokens(
     let signature = "";
     if (type === "buy") {
       const maxAllowance = await getShareDetails(shareTokenMintAddress);
+      console.log("Max Allowance", maxAllowance);
+
+      maxAllowance = parseInt(maxAllowance);
 
       if (amount > maxAllowance) {
         throw new Error("Amount exceeds maximum allowance.");
       }
 
-      let activeUmi = umi;
+      let activeUmi = null;
       let tokenAccount = null;
+
+      const nexAddress = process.env.NEX_ADDRESS || "";
 
       if (shareTokenMintAddress === nexAddress) {
         console.log("Active UMI: NEX");
@@ -78,7 +79,48 @@ export async function transferTokens(
         amount: BigInt(amount),
         tokenStandard: TokenStandard.Fungible,
         token: tokenAccount,
-      }).sendAndConfirm(activeUmi);
+      })
+        .sendAndConfirm(activeUmi, {
+          confirm: {
+            commitment: "processed",
+          },
+        })
+        .catch((error) => {
+          console.error("Error in transferV1", error);
+        });
+
+      let attempts = 0;
+      const maxAttempts = 30; // Maximum time to wait (~30s, adjust as needed)
+      const delayMs = 1000; // Check every 1 second
+
+      console.log("Create Fungible Raw", transferIx);
+
+      console.log(
+        `⏳ Waiting for transaction confirmation: ${transferIx.signature}`
+      );
+
+      let emptyArray = [];
+      emptyArray.push(transferIx.signature);
+
+      while (attempts < maxAttempts) {
+        const latestConfirmation = await activeUmi.rpc.getSignatureStatuses(
+          emptyArray
+        );
+
+        console.log("Latest Confirmation", latestConfirmation);
+
+        if (latestConfirmation[0]?.commitment === "finalized") {
+          console.log("✅ Transaction is finalized!");
+          break;
+        } else if (latestConfirmation[0]?.commitment === "confirmed") {
+          console.log("⚠️ Transaction is confirmed but not finalized yet...");
+        } else {
+          console.log(`🔄 Waiting... (${attempts + 1}/${maxAttempts})`);
+        }
+
+        await new Promise((resolve) => setTimeout(resolve, delayMs)); // Wait before checking again
+        attempts++;
+      }
 
       const USDCBalance = await getBalance(
         USDC_MINT_ADDRESS,
@@ -91,12 +133,12 @@ export async function transferTokens(
       signature = base58.deserialize(transferIx.signature)[0];
       console.log("Transfer", signature);
       if (maxAllowance !== balance) {
-        await updateMaxAllowance(shareTokenMintAddress, balance);
+        await updateMaxAllowance(shareTokenMintAddress, balance - amount);
       }
 
       return signature;
     } else if (type === "sell") {
-      let activeUmi = umi;
+      let activeUmi = null;
 
       // APPROVED RECEIVERS:
       // {"8avB2XNZMbhEh5Qs1UFLtLWQgJVhAKVmeuDg6VYtiurq": "Fyn2MTFqnGpFQjoaWdmYj43cVYsvbKfUeLdhDp3zmmZT", "22wx2tyVWhfjsqhF6MXjpry4rnqZKgAMdPwMsZPsTDZ5": "7KL2fTEWgkeZyCbwGkfvLtHingV3ntFvtS1vT2o48rHZ", "J6GT31oStsR1pns4t6P7fs3ARFNo9DCoYjANuNJVDyvN": "53XrQrcaY6wb8T3YPByY3MMP5EEZJQRaXqnYznBgvMmX"}
@@ -112,6 +154,8 @@ export async function transferTokens(
       } else {
         throw new Error("Invalid authority.");
       }
+
+      const nexAddress = process.env.NEX_ADDRESS || "";
 
       if (tokenAddressFromAuthority === nexAddress) {
         console.log("Active UMI: NEX");
@@ -154,7 +198,55 @@ export async function transferTokens(
           amount: BigInt(scaledAmount),
           tokenStandard: TokenStandard.Fungible,
           token: embUsdcTokenAccount,
-        }).sendAndConfirm(activeUmi);
+        })
+          .sendAndConfirm(activeUmi, {
+            confirm: {
+              commitment: "processed",
+            },
+          })
+          .catch((error) => {
+            console.error("Error in transferV1", error);
+          });
+
+        let attempts = 0;
+        const maxAttempts = 30; // Maximum time to wait (~30s, adjust as needed)
+        const delayMs = 1000; // Check every 1 second
+
+        console.log("Create Fungible Raw", transferIx);
+
+        console.log(
+          `⏳ Waiting for transaction confirmation: ${transferIx.signature}`
+        );
+
+        let emptyArray = [];
+        emptyArray.push(transferIx.signature);
+
+        while (attempts < maxAttempts) {
+          const latestConfirmation = await activeUmi.rpc.getSignatureStatuses(
+            emptyArray
+          );
+
+          console.log("Latest Confirmation", latestConfirmation);
+
+          if (latestConfirmation[0]?.commitment === "finalized") {
+            console.log("✅ Transaction is finalized!");
+            break;
+          } else if (latestConfirmation[0]?.commitment === "confirmed") {
+            if (parseInt(latestConfirmation[0]?.confirmations) > 30) {
+              break;
+            } else {
+              console.log(
+                "⚠️ Transaction is confirmed(less than 30) but not finalized yet...",
+                latestConfirmation[0]?.confirmations
+              );
+            }
+          } else {
+            console.log(`🔄 Waiting... (${attempts + 1}/${maxAttempts})`);
+          }
+
+          await new Promise((resolve) => setTimeout(resolve, delayMs)); // Wait before checking again
+          attempts++;
+        }
 
         let newUSDCBalance = await getBalance(
           USDC_MINT_ADDRESS,
@@ -194,6 +286,14 @@ export async function getBalance(shareTokenMintAddress, account, customUmi) {
     account,
     shareTokenMintAddress
   );
+  console.log("Balance", balance);
   console.log("Balance", parseInt(balance[0].amount));
-  return parseInt(balance[0].amount);
+  // convert bigInt to integer and return the balance
+  let convertedBalance = parseInt(balance[0].amount);
+
+  if (shareTokenMintAddress !== embAddress) {
+    convertedBalance = convertedBalance / 1000000;
+  }
+
+  return convertedBalance;
 }

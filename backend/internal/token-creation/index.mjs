@@ -35,10 +35,10 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const connection = new Connection("https://api.devnet.solana.com");
-// const connection = new Connection(
-//   "https://summer-icy-bridge.solana-mainnet.quiknode.pro/59676b80a658b61070b734ff307bb7f2b5908e40"
-// );
+// const connection = new Connection("https://api.devnet.solana.com");
+const connection = new Connection(
+  "https://summer-icy-bridge.solana-mainnet.quiknode.pro/59676b80a658b61070b734ff307bb7f2b5908e40"
+);
 const umi = createUmi(connection).use(mplTokenMetadata());
 
 const a1 = "J6GT31oStsR1pns4t6P7fs3ARFNo9DCoYjANuNJVDyvN";
@@ -72,7 +72,8 @@ const embMainnetUmi = createUmi(connection)
   .use(keypairIdentity(mainnetEmbKeypair));
 
 const createTokens = async () => {
-  const currentUmi = embMainnetUmi;
+  console.log("Creating Tokens");
+  const currentUmi = mainnetDeployerUmi;
 
   const metadataUri =
     "https://amber-blank-raven-319.mypinata.cloud/ipfs/bafkreihzqvxqtkogp7whfvmq4r5alykpvtflgqjd5hbropepc3ohqfvf6e";
@@ -83,37 +84,92 @@ const createTokens = async () => {
 
   const createFungibleIx = await createFungible(currentUmi, {
     mint: mintSigner,
-    name: "Exira - EOP REITs",
-    uri: metadataUri,
+    name: "Test Token #26947",
+    uri: "",
     sellerFeeBasisPoints: percentAmount(0),
     decimals: 0,
-  }).sendAndConfirm(currentUmi);
+  })
+    .sendAndConfirm(currentUmi, {
+      confirm: {
+        commitment: "processed",
+      },
+    })
+    .catch((e) => {
+      console.log("Error", e);
+    });
+  // .sendAndConfirm(currentUmi, {
+  //   confirm: {
+  //     commitment: "confirmed",
+  //     strategy: "durableNonce",
+  //   },
+  // })
+  // .catch((e) => {
+  //   console.log("Error", e);
+  // })
+  // .then((res) => {
+  //   console.log("Res", res);
+  // });
+  // Polling for confirmation
+
+  let attempts = 0;
+  const maxAttempts = 30; // Maximum time to wait (~30s, adjust as needed)
+  const delayMs = 1000; // Check every 1 second
+
+  console.log("Create Fungible Raw", createFungibleIx);
+
+  console.log(
+    `⏳ Waiting for transaction confirmation: ${createFungibleIx.signature}`
+  );
+
+  let emptyArray = [];
+  emptyArray.push(createFungibleIx.signature);
+
+  while (attempts < maxAttempts) {
+    const latestConfirmation = await currentUmi.rpc.getSignatureStatuses(
+      emptyArray
+    );
+
+    console.log("Latest Confirmation", latestConfirmation);
+
+    if (latestConfirmation[0]?.commitment === "finalized") {
+      console.log("✅ Transaction is finalized!");
+      break;
+    } else if (latestConfirmation[0]?.commitment === "confirmed") {
+      console.log("⚠️ Transaction is confirmed but not finalized yet...");
+    } else {
+      console.log(`🔄 Waiting... (${attempts + 1}/${maxAttempts})`);
+    }
+
+    await new Promise((resolve) => setTimeout(resolve, delayMs)); // Wait before checking again
+    attempts++;
+  }
 
   const signature = base58.deserialize(createFungibleIx.signature)[0];
   console.log("Fungible Token Created", signature);
 };
 
 const mintTokens = async () => {
-  const tokenMintAddress = "53XrQrcaY6wb8T3YPByY3MMP5EEZJQRaXqnYznBgvMmX";
-  const createTokenIx = await createTokenIfMissing(umi, {
+  let currentUmi = embMainnetUmi;
+  const tokenMintAddress = "8E3PZ7v9jdwiauRdX8ZHn8peRqchRjLHeH2gyZjqFdY7";
+  const createTokenIx = await createTokenIfMissing(currentUmi, {
     mint: tokenMintAddress,
-    owner: umi.identity.publicKey,
-    ataProgram: getSplAssociatedTokenProgramId(umi),
-  }).sendAndConfirm(umi);
+    owner: currentUmi.identity.publicKey,
+    ataProgram: getSplAssociatedTokenProgramId(currentUmi),
+  }).sendAndConfirm(currentUmi);
 
   console.log("Token Created Raw", createTokenIx);
   const signature = base58.deserialize(createTokenIx.signature)[0];
   console.log("Token Created", signature);
 
-  const mintTokensIx = await mintTokensTo(umi, {
+  const mintTokensIx = await mintTokensTo(currentUmi, {
     mint: tokenMintAddress,
-    token: findAssociatedTokenPda(umi, {
+    token: findAssociatedTokenPda(currentUmi, {
       mint: tokenMintAddress,
-      owner: umi.identity.publicKey,
+      owner: currentUmi.identity.publicKey,
     }),
     // 1 thousand dollars in USDC
-    amount: BigInt(1000000000),
-  }).sendAndConfirm(umi);
+    amount: BigInt(24),
+  }).sendAndConfirm(currentUmi);
 
   console.log("Mint Tokens Raw", mintTokensIx);
   const mintTokensSignature = base58.deserialize(mintTokensIx.signature)[0];
@@ -122,8 +178,9 @@ const mintTokens = async () => {
 
 const getTokenPDA = async () => {
   // let currentUmi = embMainnetUmi;
-  let currentUmi = umi;
-  const tokenMintAddress = "53XrQrcaY6wb8T3YPByY3MMP5EEZJQRaXqnYznBgvMmX";
+  // let currentUmi = umi;
+  let currentUmi = embUmi;
+  const tokenMintAddress = "Fyn2MTFqnGpFQjoaWdmYj43cVYsvbKfUeLdhDp3zmmZT";
   const tokenPDA = await findAssociatedTokenPda(currentUmi, {
     mint: tokenMintAddress,
     owner: currentUmi.identity.publicKey,
@@ -197,8 +254,8 @@ const transferTokensv2 = async () => {
   console.log("Transfer", signature);
 };
 
-// createTokens();
-getTokenPDA();
+createTokens();
+// getTokenPDA();
 // fetchBalance();
 // mintTokens();
 // getAllTokenDetails();

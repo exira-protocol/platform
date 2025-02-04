@@ -52,24 +52,29 @@ export const logger = winston.createLogger({
 });
 
 export const SOLANA_RPC_URL =
-  process.env.SOLANA_RPC_URL || "https://api.devnet.solana.com";
+  process.env.NODE_ENV === "dev.devnet"
+    ? "https://api.devnet.solana.com"
+    : "https://summer-icy-bridge.solana-mainnet.quiknode.pro/59676b80a658b61070b734ff307bb7f2b5908e40";
 export const connection = new Connection(SOLANA_RPC_URL);
 
-export const SUPABASE_URL = process.env.SUPABASE_URL;
-export const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
+export const SUPABASE_URL = process.env.SUPABASE_URL || "1";
+export const SUPABASE_SERVICE_ROLE_KEY =
+  process.env.SUPABASE_SERVICE_ROLE_KEY || "2";
 export const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
 export const APPROVED_RECEIVERS = JSON.parse(
   process.env.APPROVED_RECEIVERS || "{}"
 );
 
-export const USDC_TOKEN_MINT_ADDRESS = process.env.USDC_TOKEN_MINT_ADDRESS;
+export const USDC_TOKEN_MINT_ADDRESS =
+  process.env.USDC_TOKEN_MINT_ADDRESS || "3";
 
-const EMB_PRIV_KEY = process.env.EMB_PRIVATE_KEY;
+const EMB_PRIV_KEY = process.env.EMB_PRIVATE_KEY || "4";
 const keypair = Keypair.fromSecretKey(bs58.decode(EMB_PRIV_KEY));
 
 export const umi = createUmi(connection)
   .use(mplTokenMetadata())
   .use(keypairIdentity(keypair));
 
-export const USDC_TOKEN_ADDRESS = process.env.USDC_TOKEN_ADDRESS;
+// not needed
+// export const USDC_TOKEN_ADDRESS = process.env.USDC_TOKEN_ADDRESS || "5";

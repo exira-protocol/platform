@@ -18,7 +18,7 @@ import { processTransaction } from "./index.js";
 // const { processTransaction } = require("./index.js");
 // const logger = require("./config.js").logger;
 
-dotenv.config();
+dotenv.config({ path: `.env.${process.env.NODE_ENV || "development"}` });
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -87,4 +87,7 @@ app.get("solana/buy/health", (req, res) => {
 
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
+  console.log(`Passed Variable: ${process.env.NODE_ENV}`);
+  console.log("Environment Variable: ", process.env.ENVIRONMENT);
+  // console.log("All Environment Variables: ", process.env);
 });

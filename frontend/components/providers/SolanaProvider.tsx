@@ -25,7 +25,13 @@ export function SolanaProvider({ children }: SolanaProviderProps) {
 
   const wallets = useMemo(() => [], []);
   const queryClient = useMemo(() => new QueryClient(), []);
-  const endpoint = useMemo(() => clusterApiUrl("devnet"), []); // Change to "devnet" if needed
+  let endpoint = "";
+  if (process.env.NEXT_PUBLIC_APP_ENV !== "devnet") {
+    endpoint =
+      "https://summer-icy-bridge.solana-mainnet.quiknode.pro/59676b80a658b61070b734ff307bb7f2b5908e40";
+  } else {
+    endpoint = useMemo(() => clusterApiUrl("devnet"), []);
+  }
 
   // If the selected network is not Solana, just render the children
   if (selectedNetwork !== "Solana") {

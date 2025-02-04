@@ -53,9 +53,19 @@ export async function getUserId(walletAddress) {
 
   if (error || !data) {
     console.warn(
-      `⚠️ User not found for wallet address: ${walletAddress}, using default ID: 404`
+      `⚠️ User not found for wallet address: ${walletAddress}, creating it...`
     );
-    return 404;
+    // insert the user into the database and return the id
+    const { data, error } = await supabase
+      .from("users")
+      .insert([{ wallet_address: walletAddress }])
+      .select("id")
+      .single();
+    if (error) {
+      console.error(`❌ Failed to store user: ${error.message}`);
+      throw new Error("Failed to store user in database.");
+    }
+    return data.id;
   }
   return data.id;
 }

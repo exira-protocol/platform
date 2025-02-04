@@ -9,7 +9,7 @@ import winston from "winston";
 import DailyRotateFile from "winston-daily-rotate-file";
 import fs from "fs";
 
-dotenv.config();
+dotenv.config({ path: `.env.${process.env.NODE_ENV || "development"}` });
 
 // Ensure logs directory exists
 const logDir = "./logs";
@@ -40,7 +40,9 @@ export const logger = winston.createLogger({
 });
 
 export const SOLANA_RPC_URL =
-  process.env.SOLANA_RPC_URL || "https://api.devnet.solana.com";
+  process.env.NODE_ENV === "dev.devnet"
+    ? "https://api.devnet.solana.com"
+    : "https://summer-icy-bridge.solana-mainnet.quiknode.pro/59676b80a658b61070b734ff307bb7f2b5908e40";
 export const connection = new Connection(SOLANA_RPC_URL);
 
 export const SUPABASE_URL = process.env.SUPABASE_URL;
@@ -59,5 +61,3 @@ const keypair = Keypair.fromSecretKey(bs58.decode(EMB_PRIV_KEY));
 export const umi = createUmi(connection)
   .use(mplTokenMetadata())
   .use(keypairIdentity(keypair));
-
-export const USDC_TOKEN_ADDRESS = process.env.USDC_TOKEN_ADDRESS;

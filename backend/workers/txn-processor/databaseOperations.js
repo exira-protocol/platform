@@ -32,9 +32,7 @@ export async function getShareDetails(tokenMintAddress) {
     throw new Error("Invalid token mint address, no matching share found.");
   }
 
-  return {
-    maxAllowance: data.max_allowance,
-  };
+  return data.max_allowance;
 }
 
 export async function updateMaxAllowance(tokenMintAddress, newMaxAllowance) {

@@ -62,7 +62,7 @@ export default function Sidebar() {
           <span>{isWalletConnected ? "Disconnect" : "Logout"}</span>
         </button>
         <p>
-          <span className="text-muted-foreground">
+          <span className="text-muted-foreground text-xs">
             Version: {process.env.NEXT_PUBLIC_VERSION}
           </span>
         </p>

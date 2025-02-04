@@ -1,5 +1,8 @@
 import { fetchTransaction } from "./transactionFetcher.js";
-import { validateReceiver, validateTransaction } from "./transactionValidator.js";
+import {
+  validateReceiver,
+  validateTransaction,
+} from "./transactionValidator.js";
 import {
   addToUSDCTxn,
   getUserId,
@@ -7,7 +10,7 @@ import {
   insertTransaction,
   addMessageToQueue,
 } from "./databaseOperations.js";
-import { transferTokens } from "./tokenTransfer.js";
+// import { transferTokens } from "./tokenTransfer.js";
 import { getUSDCTransferred } from "./transactionValidator.js";
 import { APPROVED_RECEIVERS, logger } from "./config.js";
 
@@ -46,8 +49,15 @@ export async function processTransaction(req, res) {
 
     await validateTransaction(transaction);
 
-    const sender = transaction.transaction.message.accountKeys[0];
-    const receiver = transaction.meta?.postTokenBalances[0]?.owner || "Unknown";
+    let { authorityAddress, mintTokenAddress, userAddress } =
+      await validateReceiver(transaction);
+
+    let shareTokenMintAddress = mintTokenAddress;
+
+    // the user address
+    const sender = userAddress;
+    // the authority address
+    const receiver = authorityAddress;
 
     const amountTransferred = getUSDCTransferred(transaction);
 
@@ -62,7 +72,13 @@ export async function processTransaction(req, res) {
 
     const userId = await getUserId(sender);
 
-    let shareTokenMintAddress = await validateReceiver(transaction);
+    // return {
+    //   authorityAddress: authority, // Share ID or token mint address
+    //   mintTokenAddress: APPROVED_RECEIVERS[authority], // Share ID or token mint address
+    //   userAddress: user, // The other wallet address
+    // };
+
+    // let shareTokenMintAddress = await validateReceiver(transaction);
 
     // if (!(receiver in APPROVED_RECEIVERS)) {
     //   throw new Error(
@@ -71,8 +87,6 @@ export async function processTransaction(req, res) {
     // } else {
     //   shareTokenMintAddress = APPROVED_RECEIVERS[receiver];
     // }
-
-    
 
     console.log("🔍 Share Token Mint Address:", shareTokenMintAddress);
     console.log("Receiver:", receiver);
@@ -104,7 +118,7 @@ export async function processTransaction(req, res) {
       amountTransferred - shareTokensToTransfer * pricePerShare;
     const expectedFee = shareTokensToTransfer * pricePerShare * 0.002;
 
-    console.log("Expected Total USDC with Fee:", expectedTotalUSDC);
+    // console.log("Expected Total USDC with Fee:", expectedTotalUSDC);
     console.log("Amount Transferred:", amountTransferred);
     console.log("Excess Amount (should match 1% fee):", excessAmount);
     console.log("Expected 1% Fee:", expectedFee);

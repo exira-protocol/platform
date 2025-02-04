@@ -13,30 +13,30 @@ import { addToTokenTxn } from "./databaseOperations.js";
 // const { fetchTransaction } = require("./transactionFetcher");
 // const { addToTokenTxn } = require("./databaseOperations");
 
-export async function transferTokens(toAddress, amount, shareTokenMintAddress) {
-  try {
-    const transferIx = await transferV1(umi, {
-      mint: shareTokenMintAddress,
-      tokenOwner: umi.identity.publicKey,
-      destinationOwner: toAddress,
-      amount: BigInt(amount),
-      tokenStandard: TokenStandard.Fungible,
-      token: USDC_TOKEN_ADDRESS,
-    }).sendAndConfirm(umi);
+// export async function transferTokens(toAddress, amount, shareTokenMintAddress) {
+//   try {
+//     const transferIx = await transferV1(umi, {
+//       mint: shareTokenMintAddress,
+//       tokenOwner: umi.identity.publicKey,
+//       destinationOwner: toAddress,
+//       amount: BigInt(amount),
+//       tokenStandard: TokenStandard.Fungible,
+//       token: USDC_TOKEN_ADDRESS,
+//     }).sendAndConfirm(umi);
 
-    const signature = base58.deserialize(transferIx.signature)[0];
-    console.log("Transfer", signature);
-    const transaction = await fetchTransaction(signature, "token");
-    await addToTokenTxn(transaction, "", "success");
-    return signature;
-  } catch (error) {
-    console.error("Transfer Error", error);
-    const transaction = await fetchTransaction(signature);
-    await addToTokenTxn(
-      transaction,
-      "Transfer of tokens failed. Reason: " + error,
-      "failed"
-    );
-    throw new Error("Transfer failed.");
-  }
-}
+//     const signature = base58.deserialize(transferIx.signature)[0];
+//     console.log("Transfer", signature);
+//     const transaction = await fetchTransaction(signature, "token");
+//     await addToTokenTxn(transaction, "", "success");
+//     return signature;
+//   } catch (error) {
+//     console.error("Transfer Error", error);
+//     const transaction = await fetchTransaction(signature);
+//     await addToTokenTxn(
+//       transaction,
+//       "Transfer of tokens failed. Reason: " + error,
+//       "failed"
+//     );
+//     throw new Error("Transfer failed.");
+//   }
+// }

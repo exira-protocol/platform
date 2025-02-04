@@ -208,6 +208,18 @@ export const TransactionPanel: React.FC<TransactionPanelProps> = ({
         id: toastId,
       });
 
+      console.log(
+        "1.3 Processing USDC transaction",
+        "USDCAddress",
+        USDCAddress,
+        "umi.identity.publicKey",
+        umi.identity.publicKey,
+        "toAddress",
+        toAddress,
+        "scaledAmount",
+        scaledAmount
+      );
+
       const transferIx = await transferV1(umi, {
         mint: USDCAddress,
         tokenOwner: umi.identity.publicKey,

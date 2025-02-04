@@ -6,10 +6,16 @@ import bs58 from "bs58";
 import { createClient } from "@supabase/supabase-js";
 import dotenv from "dotenv";
 
-dotenv.config();
+dotenv.config({ path: `.env.${process.env.NODE_ENV || "development"}` });
+
+// export const SOLANA_RPC_URL =
+//   process.env.SOLANA_RPC_URL || "https://api.devnet.solana.com";
 
 export const SOLANA_RPC_URL =
-  process.env.SOLANA_RPC_URL || "https://api.devnet.solana.com";
+  process.env.NODE_ENV === "dev.devnet"
+    ? "https://api.devnet.solana.com"
+    : "https://summer-icy-bridge.solana-mainnet.quiknode.pro/59676b80a658b61070b734ff307bb7f2b5908e40";
+
 export const connection = new Connection(SOLANA_RPC_URL);
 
 export const SUPABASE_URL = process.env.SUPABASE_URL;
@@ -22,13 +28,6 @@ export const APPROVED_RECEIVERS = JSON.parse(
 
 export const USDC_MINT_ADDRESS = process.env.USDC_MINT_ADDRESS;
 
-const a1PKey = process.env.A1_PRIVATE_KEY;
-const keypair = Keypair.fromSecretKey(bs58.decode(a1PKey));
-
-export let umi = createUmi(connection)
-  .use(mplTokenMetadata())
-  .use(keypairIdentity(keypair));
-
 // umi for emb
 const embPKey = process.env.EMB_PRIVATE_KEY;
 const embKeypair = Keypair.fromSecretKey(bs58.decode(embPKey));
@@ -38,13 +37,3 @@ export const embUsdcTokenAccount = process.env.EMB_USDC_TOKEN_ACCOUNT;
 export const embUmi = createUmi(connection)
   .use(mplTokenMetadata())
   .use(keypairIdentity(embKeypair));
-
-// umi for nex
-const nexPKey = process.env.NEX_PRIVATE_KEY;
-const nexKeypair = Keypair.fromSecretKey(bs58.decode(nexPKey));
-export const nexAddress = process.env.NEX_ADDRESS;
-export const nexUmi = createUmi(connection)
-  .use(mplTokenMetadata())
-  .use(keypairIdentity(nexKeypair));
-
-export const TOKEN_ACCOUNT = process.env.TOKEN_ACCOUNT;

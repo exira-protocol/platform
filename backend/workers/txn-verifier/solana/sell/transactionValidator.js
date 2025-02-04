@@ -185,7 +185,7 @@ function validateTransactionStructure(transaction) {
 
 const SPL_TOKEN_PROGRAM_ID = "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA";
 
-export function getShareTokensTransferred(transaction) {
+export function getShareTokensTransferredOld(transaction) {
   console.log("🔍 Extracting SPL Token Transfer Details...");
 
   const accountKeys = transaction.transaction.message.accountKeys || [];
@@ -288,4 +288,121 @@ export function getShareTokensTransferred(transaction) {
     console.error("❌ Error decoding SPL Token amount:", error);
     return null;
   }
+}
+
+export function getShareTokensTransferred(transaction) {
+  console.log("🔍 Extracting SPL Token Transfer Details...");
+
+  const accountKeys = transaction.transaction.message.accountKeys || [];
+  const instructions = transaction.transaction.message.instructions || [];
+  const innerInstructions = transaction.meta?.innerInstructions || [];
+  const logMessages = transaction.meta?.logMessages || [];
+
+  // 🔍 Step 1: Find "Instruction: TransferChecked" in logs
+  const transferLog = logMessages.find((log) =>
+    log.includes("Instruction: TransferChecked")
+  );
+
+  if (!transferLog) {
+    console.error("❌ No SPL TransferChecked instruction found in logs.");
+    return null;
+  }
+  console.log("✅ Found TransferChecked log entry.");
+
+  // 🔍 Step 2: Gather all instructions (primary + inner)
+  const allInstructions = [...instructions];
+
+  for (const innerInstr of innerInstructions) {
+    allInstructions.push(...innerInstr.instructions);
+  }
+
+  let selectedData = null;
+
+  // 🔍 Step 3: Loop through all instructions and find the correct one
+  for (const instr of allInstructions) {
+    const programId = accountKeys[instr.programIdIndex];
+
+    if (programId !== SPL_TOKEN_PROGRAM_ID) continue; // Ignore non-SPL Token Program instructions
+
+    const encodedData = instr.data;
+    if (!encodedData) continue; // Skip if no data
+
+    try {
+      const decodedData = bs58.decode(encodedData);
+      const buffer = Buffer.from(decodedData);
+
+      console.log("🔹 Instruction Data (Hex):", buffer.toString("hex"));
+
+      if (buffer.length < 10) continue; // Ignore if not long enough for TransferChecked
+
+      // Extract Discriminator (First byte)
+      const discriminator = buffer.readUInt8(0);
+      if (discriminator !== 12) continue; // Ensure it's a TransferChecked instruction
+
+      // Extract Amount (u64, little-endian)
+      const amountTransferred = Number(buffer.readBigUInt64LE(1));
+
+      // Extract Decimals (Last byte)
+      const decimals = buffer.readUInt8(9);
+      if (decimals !== 0) continue; // Ensure decimals are exactly 0
+
+      // Ensure amount is a whole number, not fractional or power-based
+      if (
+        !Number.isFinite(amountTransferred) ||
+        amountTransferred <= 0 ||
+        !Number.isInteger(amountTransferred)
+      ) {
+        continue;
+      }
+
+      // ✅ This is the correct instruction
+      selectedData = amountTransferred;
+
+      console.log("✅ Found valid TransferChecked instruction.");
+      console.log("Final Amount:", selectedData);
+    } catch (error) {
+      console.error("❌ Error decoding instruction:", error);
+    }
+
+    // try {
+    //   const decodedData = bs58.decode(encodedData);
+    //   const buffer = Buffer.from(decodedData);
+
+    //   console.log("🔹 Instruction Data (Hex):", buffer.toString("hex"));
+
+    //   if (buffer.length < 10) continue; // Ignore if not long enough for TransferChecked
+
+    //   // Extract Discriminator (First byte)
+    //   const discriminator = buffer.readUInt8(0);
+    //   if (discriminator !== 12) continue; // Ensure it's a TransferChecked instruction
+
+    //   // Extract Amount (u64, little-endian)
+    //   const amountTransferred = Number(buffer.readBigUInt64LE(1));
+
+    //   // Extract Decimals (Last byte)
+    //   const decimals = buffer.readUInt8(9);
+    //   if (decimals !== 6) continue; // Ensure it's a valid USDC transfer (6 decimals)
+
+    //   // Ensure amount is a proper decimal, not in powers
+    //   const adjustedAmount = amountTransferred / Math.pow(10, decimals);
+    //   if (!Number.isFinite(adjustedAmount) || adjustedAmount <= 0) continue;
+
+    //   // ✅ This is the correct instruction
+    //   selectedData = adjustedAmount;
+
+    //   console.log("✅ Found valid TransferChecked instruction.");
+    //   console.log("Adjusted Amount:", adjustedAmount);
+    //   console.log("🔍 Decoded Amount:", selectedData);
+    // } catch (error) {
+    //   console.error("❌ Error decoding instruction:", error);
+    // }
+  }
+
+  if (selectedData !== null) {
+    console.log(`💰 Corrected Amount Transferred: ${selectedData}`);
+    return selectedData;
+  }
+
+  console.error("❌ No valid TransferChecked instruction found.");
+  return null;
 }

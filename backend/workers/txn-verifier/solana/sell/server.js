@@ -48,18 +48,22 @@ app.use((err, req, res, next) => {
     .json({ error: "Internal server error", message: err.message });
 });
 
-app.post("/solana/sell/process-transaction", validateSignature, async (req, res, next) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
+app.post(
+  "/solana/sell/process-transaction",
+  validateSignature,
+  async (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
 
-  try {
-    await processTransaction(req, res);
-  } catch (error) {
-    next(error);
+    try {
+      await processTransaction(req, res);
+    } catch (error) {
+      next(error);
+    }
   }
-});
+);
 
 app.get("solana/sell/health", (req, res) => {
   res.send("OK");
@@ -67,4 +71,5 @@ app.get("solana/sell/health", (req, res) => {
 
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
+  console.log("Running environment: ", process.env.ENVIRONMENT || "not found");
 });

@@ -103,6 +103,7 @@ async function executeBlockchainTransaction(payload) {
 
 async function pollQueue() {
   console.log("Worker started. Polling for transactions...");
+  console.log("Enivronment:", process.env.ENVIRONMENT);
 
   while (true) {
     try {
