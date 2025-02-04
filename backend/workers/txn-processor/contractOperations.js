@@ -72,6 +72,8 @@ export async function transferTokens(
       console.log("shareTokenMintAddress", shareTokenMintAddress);
       console.log("active UMI public key", activeUmi.identity.publicKey);
 
+      let extractedSignature = "";
+
       const transferIx = await transferV1(activeUmi, {
         mint: shareTokenMintAddress,
         tokenOwner: activeUmi.identity.publicKey,
@@ -86,21 +88,47 @@ export async function transferTokens(
           },
         })
         .catch((error) => {
-          console.error("Error in transferV1", error);
+          console.error("❌ Error in transferV1", error);
+
+          // 1️⃣ **Primary Method**: Extract directly from the error object
+          extractedSignature = error?.signature;
+
+          // 2️⃣ **Fallback Method**: Extract signature from the error message text
+          if (!extractedSignature && error?.message) {
+            const match = error.message.match(/Signature\s+([\w]+)/);
+            if (match) {
+              extractedSignature = match[1]; // Extract the signature from the regex match
+            }
+          }
+
+          // 3️⃣ **Final Check & Logging**
+          if (extractedSignature) {
+            console.log(
+              "⚠️ Extracted Transaction Signature:",
+              extractedSignature
+            );
+            extractedSignature = base58.serialize(extractedSignature);
+          } else {
+            console.log("⚠️ Unable to extract signature from error.");
+          }
         });
 
       let attempts = 0;
       const maxAttempts = 30; // Maximum time to wait (~30s, adjust as needed)
       const delayMs = 1000; // Check every 1 second
 
-      console.log("Create Fungible Raw", transferIx);
+      console.log("Create Fungible Raw", transferIx || extractedSignature);
 
       console.log(
-        `⏳ Waiting for transaction confirmation: ${transferIx.signature}`
+        `⏳ Waiting for transaction confirmation: ${
+          transferIx.signature || extractedSignature
+        }`
       );
 
+      const signatureToPass = extractedSignature || transferIx.signature;
+
       let emptyArray = [];
-      emptyArray.push(transferIx.signature);
+      emptyArray.push(signatureToPass);
 
       while (attempts < maxAttempts) {
         const latestConfirmation = await activeUmi.rpc.getSignatureStatuses(
@@ -130,7 +158,7 @@ export async function transferTokens(
 
       await updateUSDCBalance("USDC-" + authority, USDCBalance);
 
-      signature = base58.deserialize(transferIx.signature)[0];
+      signature = base58.deserialize(signatureToPass)[0];
       console.log("Transfer", signature);
       if (maxAllowance !== balance) {
         await updateMaxAllowance(shareTokenMintAddress, balance - amount);
@@ -191,6 +219,8 @@ export async function transferTokens(
           `🔍 Scaled Amount for USDC (integer format): ${scaledAmount}`
         );
 
+        let extractedSignature = "";
+
         transferIx = await transferV1(activeUmi, {
           mint: USDC_MINT_ADDRESS,
           tokenOwner: activeUmi.identity.publicKey,
@@ -205,21 +235,47 @@ export async function transferTokens(
             },
           })
           .catch((error) => {
-            console.error("Error in transferV1", error);
+            console.error("❌ Error in transferV1", error);
+
+            // 1️⃣ **Primary Method**: Extract directly from the error object
+            extractedSignature = error?.signature;
+
+            // 2️⃣ **Fallback Method**: Extract signature from the error message text
+            if (!extractedSignature && error?.message) {
+              const match = error.message.match(/Signature\s+([\w]+)/);
+              if (match) {
+                extractedSignature = match[1]; // Extract the signature from the regex match
+              }
+            }
+
+            // 3️⃣ **Final Check & Logging**
+            if (extractedSignature) {
+              console.log(
+                "⚠️ Extracted Transaction Signature:",
+                extractedSignature
+              );
+              extractedSignature = base58.serialize(extractedSignature);
+            } else {
+              console.log("⚠️ Unable to extract signature from error.");
+            }
           });
 
         let attempts = 0;
         const maxAttempts = 30; // Maximum time to wait (~30s, adjust as needed)
         const delayMs = 1000; // Check every 1 second
 
-        console.log("Create Fungible Raw", transferIx);
+        console.log("Create Fungible Raw", transferIx || extractedSignature);
 
         console.log(
-          `⏳ Waiting for transaction confirmation: ${transferIx.signature}`
+          `⏳ Waiting for transaction confirmation: ${
+            transferIx.signature || extractedSignature
+          }`
         );
 
+        const signatureToPass = extractedSignature || transferIx.signature;
+
         let emptyArray = [];
-        emptyArray.push(transferIx.signature);
+        emptyArray.push(signatureToPass);
 
         while (attempts < maxAttempts) {
           const latestConfirmation = await activeUmi.rpc.getSignatureStatuses(
@@ -254,7 +310,7 @@ export async function transferTokens(
           activeUmi
         );
         await updateUSDCBalance("USDC-" + authority, newUSDCBalance);
-        signature = base58.deserialize(transferIx.signature)[0];
+        signature = base58.deserialize(signatureToPass)[0];
         console.log("Transfer", signature);
 
         const transaction = await fetchTransaction(signature, "token");
