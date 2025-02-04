@@ -20,7 +20,8 @@ import fs from "fs";
 // const DailyRotateFile = require("winston-daily-rotate-file");
 // const fs = require("fs");
 
-dotenv.config();
+// dotenv.config();
+dotenv.config({ path: `.env.${process.env.NODE_ENV || "development"}` });
 
 // Ensure logs directory exists
 const logDir = "./logs";

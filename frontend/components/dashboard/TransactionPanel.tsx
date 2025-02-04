@@ -157,9 +157,20 @@ export const TransactionPanel: React.FC<TransactionPanelProps> = ({
       console.log("1.1 Processing USDC transaction");
 
       const umi = initializeUmi(connection, wallet);
-      const APPROVED_RECEIVERS = JSON.parse(
-        process.env.NEXT_PUBLIC_APPROVED_RECEIVERS || "{}"
-      );
+
+      const APP_ENV = process.env.NEXT_PUBLIC_APP_ENV || "devnet";
+
+      let APPROVED_RECEIVERS = {};
+
+      if (APP_ENV === "mainnet") {
+        APPROVED_RECEIVERS = JSON.parse(
+          process.env.NEXT_PUBLIC_APPROVED_RECEIVERS || "{}"
+        );
+      } else {
+        APPROVED_RECEIVERS = JSON.parse(
+          process.env.NEXT_PUBLIC_APPROVED_RECEIVERS_DEVNET || "{}"
+        );
+      }
 
       // APPROVED_RECEIVERS='{"8avB2XNZMbhEh5Qs1UFLtLWQgJVhAKVmeuDg6VYtiurq": "Fyn2MTFqnGpFQjoaWdmYj43cVYsvbKfUeLdhDp3zmmZT", "22wx2tyVWhfjsqhF6MXjpry4rnqZKgAMdPwMsZPsTDZ5": "7KL2fTEWgkeZyCbwGkfvLtHingV3ntFvtS1vT2o48rHZ", "J6GT31oStsR1pns4t6P7fs3ARFNo9DCoYjANuNJVDyvN": "53XrQrcaY6wb8T3YPByY3MMP5EEZJQRaXqnYznBgvMmX"}'
 
@@ -174,7 +185,16 @@ export const TransactionPanel: React.FC<TransactionPanelProps> = ({
       // const USDCAddress = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v";
       // Dummy
       // const USDCAddress = "53XrQrcaY6wb8T3YPByY3MMP5EEZJQRaXqnYznBgvMmX";
-      const USDCAddress = process.env.NEXT_PUBLIC_USDC_ADDRESS || "";
+
+      let USDCAddress = "";
+
+      if (APP_ENV === "mainnet") {
+        USDCAddress = process.env.NEXT_PUBLIC_USDC_ADDRESS || "";
+      } else {
+        USDCAddress = process.env.NEXT_PUBLIC_USDC_ADDRESS_DEVNET || "";
+      }
+
+      // const USDCAddress = process.env.NEXT_PUBLIC_USDC_ADDRESS || "";
       // const toAddress = "8avB2XNZMbhEh5Qs1UFLtLWQgJVhAKVmeuDg6VYtiurq";
 
       const preciseAmount =
@@ -201,9 +221,16 @@ export const TransactionPanel: React.FC<TransactionPanelProps> = ({
       const signature = base58.deserialize(transferIx.signature)[0];
       console.log("Transfer", signature);
 
+      let backendUrl = "";
+
+      if (APP_ENV === "mainnet") {
+        backendUrl = process.env.NEXT_PUBLIC_BUY_BACKEND_URL || "";
+      } else {
+        backendUrl = process.env.NEXT_PUBLIC_BUY_BACKEND_URL_DEVNET || "";
+      }
+
       const response = await axios.post(
-        process.env.NEXT_PUBLIC_BUY_BACKEND_URL +
-          "/solana/buy/process-transaction",
+        backendUrl + "/solana/buy/process-transaction",
         {
           signature: signature,
         }

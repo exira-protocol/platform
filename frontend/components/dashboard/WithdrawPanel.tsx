@@ -198,9 +198,20 @@ export const WithdrawPanel: React.FC<WithdrawPanelProps> = ({
       console.log("1.1 Processing token transaction");
 
       const umi = initializeUmi(connection, wallet);
-      const APPROVED_RECEIVERS = JSON.parse(
-        process.env.NEXT_PUBLIC_APPROVED_RECEIVERS || "{}"
-      );
+
+      const APP_ENV = process.env.NEXT_PUBLIC_APP_ENV || "devnet";
+
+      let APPROVED_RECEIVERS = {};
+
+      if (APP_ENV === "mainnet") {
+        APPROVED_RECEIVERS = JSON.parse(
+          process.env.NEXT_PUBLIC_APPROVED_RECEIVERS || "{}"
+        );
+      } else {
+        APPROVED_RECEIVERS = JSON.parse(
+          process.env.NEXT_PUBLIC_APPROVED_RECEIVERS_DEVNET || "{}"
+        );
+      }
 
       // match the selectedToken.contract with the value in APPROVED_RECEIVERS and get the address
       const toAddress =
@@ -226,9 +237,16 @@ export const WithdrawPanel: React.FC<WithdrawPanelProps> = ({
       const signature = base58.deserialize(transferIx.signature)[0];
       console.log("Transfer", signature);
 
+      let backendUrl = "";
+
+      if (APP_ENV === "mainnet") {
+        backendUrl = process.env.NEXT_PUBLIC_SELL_BACKEND_URL;
+      } else {
+        backendUrl = process.env.NEXT_PUBLIC_SELL_BACKEND_URL_DEVNET;
+      }
+
       const response = await axios.post(
-        process.env.NEXT_PUBLIC_SELL_BACKEND_URL +
-          "/solana/sell/process-transaction",
+        backendUrl + "/solana/sell/process-transaction",
         {
           signature: signature,
         }
