@@ -86,7 +86,10 @@ export const metadata: Metadata = {
 };
 
 // redefine console.log to an empty function
-if (process.env.NEXT_PUBLIC_APP_ENV !== "devnet") console.log = () => {};
+if (process.env.NEXT_PUBLIC_APP_ENV !== "devnet") {
+  console.log("Production Environment");
+  console.log = () => {};
+}
 
 export default function RootLayout({
   children,

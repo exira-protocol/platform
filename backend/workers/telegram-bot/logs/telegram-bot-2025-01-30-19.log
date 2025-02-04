@@ -1,2 +1,0 @@
-{"level":"info","message":"🚀 Telegram Bot Worker running on port 4000","timestamp":"2025-01-30T14:17:42.774Z"}
-{"level":"info","message":"✅ Telegram message sent successfully:","ok":true,"result":{"chat":{"id":-1002258747469,"title":"Exira Tech Monitor","type":"supergroup"},"date":1738246693,"entities":[{"length":5,"offset":3,"type":"bold"}],"from":{"first_name":"ExiraTechBot","id":7798561616,"is_bot":true,"username":"exiratech_bot"},"message_id":13,"text":"📢 Alert 📢\n\n✅ Health Check: Telegram Bot Worker is operational!"},"timestamp":"2025-01-30T14:18:13.891Z"}
