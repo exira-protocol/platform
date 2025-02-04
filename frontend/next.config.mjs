@@ -5,10 +5,15 @@ try {
   // ignore error
 }
 
+const isProduction = process.env.NEXT_PUBLIC_APP_ENV !== "devnet";
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
+  },
+  compiler: {
+    removeConsole: isProduction,
   },
   typescript: {
     ignoreBuildErrors: true,

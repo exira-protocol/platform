@@ -5,6 +5,7 @@ import { ThemeProvider } from "@/lib/theme";
 import { Layout } from "@/components/layout/Layout";
 import Head from "next/head";
 import { url } from "inspector";
+import { useEffect } from "react";
 
 const lexend = Lexend({ subsets: ["latin"] });
 
@@ -84,12 +85,6 @@ export const metadata: Metadata = {
   // ✅ Manifest (For PWA support)
   manifest: "/site.webmanifest",
 };
-
-// redefine console.log to an empty function
-if (process.env.NEXT_PUBLIC_APP_ENV !== "devnet") {
-  console.log("Production Environment");
-  console.log = () => {};
-}
 
 export default function RootLayout({
   children,
