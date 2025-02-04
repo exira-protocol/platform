@@ -31,7 +31,7 @@ export async function transferTokens(
   try {
     let signature = "";
     if (type === "buy") {
-      const maxAllowance = await getShareDetails(shareTokenMintAddress);
+      let maxAllowance = await getShareDetails(shareTokenMintAddress);
       console.log("Max Allowance", maxAllowance);
 
       maxAllowance = parseInt(maxAllowance);
