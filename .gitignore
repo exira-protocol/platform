@@ -2,3 +2,14 @@ node_modules/
 .next/
 .env
 logs/
+backend/workers/txn-processor/.env.dev.devnet
+backend/workers/txn-processor/.env.dev.mainnet
+backend/workers/txn-processor/.env.production
+backend/workers/txn-verifier/solana/buy/.env.dev.devnet
+backend/workers/txn-verifier/solana/buy/.env.dev.mainnet
+backend/workers/txn-verifier/solana/buy/.env.production
+backend/workers/txn-verifier/solana/sell/.env.dev.devnet
+backend/workers/txn-verifier/solana/sell/.env.dev.mainnet
+backend/workers/txn-verifier/solana/sell/.env.production
+frontend/.env.development
+frontend/.env.production
