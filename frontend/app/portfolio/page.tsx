@@ -100,8 +100,8 @@ export default function PortfolioPage() {
           {
             title: "Total Gain",
             value: `${
-              (stats?.current_portfolio_value.toFixed(3) ?? 0) -
-              (stats?.current_investment_value.toFixed(3) ?? 0)
+              ((stats?.current_portfolio_value.toFixed(3) ?? 0) -
+              (stats?.current_investment_value.toFixed(3) ?? 0)).toFixed(3)
             }`,
             icon: Users,
           },

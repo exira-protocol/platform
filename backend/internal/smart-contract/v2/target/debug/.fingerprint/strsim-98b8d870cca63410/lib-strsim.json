@@ -1,0 +1,1 @@
+{"rustc":12842842859803295739,"features":"[]","declared_features":"[]","target":14520901741915772287,"profile":2225463790103693989,"path":2739528505739209506,"deps":[],"local":[{"CheckDepInfo":{"dep_info":"debug/.fingerprint/strsim-98b8d870cca63410/dep-lib-strsim","checksum":false}}],"rustflags":["--cfg","procmacro2_semver_exempt"],"config":2069994364910194474,"compile_kind":0}

@@ -35,15 +35,17 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-// const connection = new Connection("https://api.devnet.solana.com");
-const connection = new Connection(
-  "https://summer-icy-bridge.solana-mainnet.quiknode.pro/59676b80a658b61070b734ff307bb7f2b5908e40"
-);
+const connection = new Connection("https://api.devnet.solana.com");
+// const connection = new Connection(
+//   "https://summer-icy-bridge.solana-mainnet.quiknode.pro/59676b80a658b61070b734ff307bb7f2b5908e40"
+// );
 const umi = createUmi(connection).use(mplTokenMetadata());
 
 const a1 = "J6GT31oStsR1pns4t6P7fs3ARFNo9DCoYjANuNJVDyvN";
+// const a1PKey =
+//   "4ciGA36faeNiPRghC4orxhPDh3GcFx9BnMHHT9gFZfR7btyr9kMFqrDgNEP8XE28ta5AkucCS2LUGzUaW3udeNge";
 const a1PKey =
-  "4ciGA36faeNiPRghC4orxhPDh3GcFx9BnMHHT9gFZfR7btyr9kMFqrDgNEP8XE28ta5AkucCS2LUGzUaW3udeNge";
+  "5KbPQdHFk784yumtrD9EMWWjdLZwme7aFpbwq3GiWRheKTE6VMeeDQNWXsm94yGjSkAHtCndGnZ9sDeDqCrVt1qb";
 const tokenAccount = "3yFiRp3jh3vUrfJiRmB71kqTfnccVpmkgQsoGnnN3JdV";
 
 const mainnetDeployerPkey = process.env.MAINNET_DEPLOYER_PKEY;
@@ -73,10 +75,9 @@ const embMainnetUmi = createUmi(connection)
 
 const createTokens = async () => {
   console.log("Creating Tokens");
-  const currentUmi = mainnetDeployerUmi;
+  const currentUmi = umi;
 
-  const metadataUri =
-    "https://amber-blank-raven-319.mypinata.cloud/ipfs/bafkreihzqvxqtkogp7whfvmq4r5alykpvtflgqjd5hbropepc3ohqfvf6e";
+  const metadataUri = "";
 
   const mintSigner = generateSigner(currentUmi);
 
@@ -84,10 +85,10 @@ const createTokens = async () => {
 
   const createFungibleIx = await createFungible(currentUmi, {
     mint: mintSigner,
-    name: "Test Token #26947",
+    name: "EXTokenB",
     uri: "",
     sellerFeeBasisPoints: percentAmount(0),
-    decimals: 0,
+    decimals: 6,
   })
     .sendAndConfirm(currentUmi, {
       confirm: {
@@ -149,8 +150,8 @@ const createTokens = async () => {
 };
 
 const mintTokens = async () => {
-  let currentUmi = embMainnetUmi;
-  const tokenMintAddress = "8E3PZ7v9jdwiauRdX8ZHn8peRqchRjLHeH2gyZjqFdY7";
+  let currentUmi = umi;
+  const tokenMintAddress = "AN4ZrsLfoX8EeDUdds7Rcw4eFKv3uJDcJ3Rw25o3wafS";
   const createTokenIx = await createTokenIfMissing(currentUmi, {
     mint: tokenMintAddress,
     owner: currentUmi.identity.publicKey,
@@ -168,7 +169,7 @@ const mintTokens = async () => {
       owner: currentUmi.identity.publicKey,
     }),
     // 1 thousand dollars in USDC
-    amount: BigInt(24),
+    amount: BigInt(10000000000),
   }).sendAndConfirm(currentUmi);
 
   console.log("Mint Tokens Raw", mintTokensIx);
@@ -179,8 +180,8 @@ const mintTokens = async () => {
 const getTokenPDA = async () => {
   // let currentUmi = embMainnetUmi;
   // let currentUmi = umi;
-  let currentUmi = embUmi;
-  const tokenMintAddress = "Fyn2MTFqnGpFQjoaWdmYj43cVYsvbKfUeLdhDp3zmmZT";
+  let currentUmi = umi;
+  const tokenMintAddress = "53XrQrcaY6wb8T3YPByY3MMP5EEZJQRaXqnYznBgvMmX";
   const tokenPDA = await findAssociatedTokenPda(currentUmi, {
     mint: tokenMintAddress,
     owner: currentUmi.identity.publicKey,
@@ -254,8 +255,24 @@ const transferTokensv2 = async () => {
   console.log("Transfer", signature);
 };
 
-createTokens();
-// getTokenPDA();
+const trash = async () => {
+  let uintArray = [
+    216, 26, 14, 14, 76, 154, 19, 232, 56, 146, 193, 26, 206, 173, 41, 128, 35,
+    100, 52, 43, 106, 45, 177, 93, 77, 153, 84, 30, 147, 175, 241, 36, 176, 119,
+    56, 249, 232, 120, 85, 83, 170, 135, 190, 97, 212, 134, 131, 70, 132, 54,
+    111, 102, 103, 104, 89, 254, 253, 95, 55, 166, 124, 11, 157, 26,
+  ];
+  let uint8Array = new Uint8Array(uintArray);
+  let buffer = Buffer.from(uint8Array);
+  let base58String = bs58.encode(buffer);
+  console.log("Base58 String", base58String);
+  // print private key
+  console.log("Private Key:", base58String);
+};
+
+// trash();
+// createTokens();
+getTokenPDA();
 // fetchBalance();
 // mintTokens();
 // getAllTokenDetails();
