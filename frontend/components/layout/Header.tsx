@@ -58,7 +58,7 @@ export function Header({ title }: HeaderProps) {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="center" className="w-48">
-            <DropdownMenuItem
+            {/* <DropdownMenuItem
               onClick={() => {
                 handleNetworkSelect("Sui");
               }}
@@ -72,7 +72,7 @@ export function Header({ title }: HeaderProps) {
                 className="mr-2"
               />
               Sui (Soon)
-            </DropdownMenuItem>
+            </DropdownMenuItem> */}
             <DropdownMenuItem onClick={() => handleNetworkSelect("Solana")}>
               <Image
                 src="/solana.svg"
@@ -83,7 +83,7 @@ export function Header({ title }: HeaderProps) {
               />
               Solana
             </DropdownMenuItem>
-            <DropdownMenuItem
+            {/* <DropdownMenuItem
               onClick={() => handleNetworkSelect("Ethereum")}
               disabled={true}
             >
@@ -95,7 +95,7 @@ export function Header({ title }: HeaderProps) {
                 className="mr-2"
               />
               Ethereum (Soon)
-            </DropdownMenuItem>
+            </DropdownMenuItem> */}
           </DropdownMenuContent>
         </DropdownMenu>
         {selectedNetwork === "Sui" ? <SuiConnectButton /> : null}
